@@ -1,6 +1,6 @@
 # CLAUDE.md: project rules (read first, every session)
 
-Project: screenshot-to-action mobile app (working title: Screenshot Actions; final name pending, must be chosen before SPR-01 sets bundle IDs). A new screenshot becomes a proposed calendar action; the user reviews and taps Add. Stack: Expo / React Native (TypeScript) app, thin Kotlin Android worker, FastAPI server, shared JSON-schema contracts. Beta target: testers install Jan 13–15, 2027.
+Project: Penciled, a screenshot-to-action mobile app (name chosen 2026-11-23; bundle IDs and App Group ID are set in SPR-01 and are hard to change afterwards). A new screenshot becomes a proposed calendar action; the user reviews and taps Add. Stack: Expo / React Native (TypeScript) app, thin Kotlin Android worker, FastAPI server, shared JSON-schema contracts. Beta target: testers install Jan 13–15, 2027.
 
 All design lives in `docs/`:
 - `docs/BUILD_HANDOFF.md`: components, acceptance criteria, hard rules (§1.7), repo layout (§1.4), cut list (§8).

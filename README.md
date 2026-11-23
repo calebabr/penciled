@@ -1,4 +1,4 @@
-# Screenshot Actions (working title)
+# Penciled
 
 A mobile app that reads your new screenshots and offers a one-tap action, starting with calendar events and deadline alerts. The model proposes; deterministic code validates; you confirm.
 

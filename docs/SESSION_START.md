@@ -1,7 +1,7 @@
 # Session start prompt: SPR-01 (paste into a fresh Claude Code session in C:\dev\screenshot-actions)
 
 ```
-You are continuing the Screenshot Actions beta build. Session 1 of sprint SPR-01: Monorepo and
+You are continuing the Penciled beta build. Session 1 of sprint SPR-01: Monorepo and
 dependency matrix (session 1 of 1). Work only on this sprint's components (COMP-REPO, including spike SP-13).
 
 READ FIRST (in order, nothing else unless a detail is missing):
@@ -18,7 +18,7 @@ DO:
   Record the Node-version finding (Node 24 installed) and the pinned SDK in docs/spikes/SP-13.md.
 - CI: lint, typecheck, Jest, pytest, a secret scan that fails on a planted fake key, an ESLint rule that
   fails on a raw hex in src/ui, and a no-content-log grep job. Metro on Windows must drive both phones.
-- Use the app name recorded in STATUS.md (builder checklist). If no name is recorded, STOP and ask the builder.
+- App name: Penciled. Propose bundle ID, URL scheme and iOS App Group ID based on the builder's developer identity and ask the builder to confirm them before writing them to app.config.ts.
 - No Swift. If the ML Kit wrapper fails on iOS new arch, use the listed fallbacks and escalate to the Chair on day 2.
 - Stop at ~4.5 hours or when Exit passes.
 

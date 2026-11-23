@@ -11,7 +11,7 @@
 SPR-01. Open a fresh session and paste `docs/SESSION_START.md`. Before that, finish the builder checklist below, especially the app name.
 
 ## Builder checklist (things only you can do; tick when done)
-- [ ] Choose the app name (candidates: Penciled, Pencil In, Inked, Shotlist, Snapdone). SPR-01 uses it for the app name, bundle IDs and the iOS App Group ID, and bundle IDs are hard to change later. Check availability of the name in both stores and a domain first.
+- [x] App name chosen: **Penciled** (2026-11-23). Still to do: check availability in both stores and as a domain before SPR-01 sets bundle IDs, and confirm the bundle ID, URL scheme and App Group ID in SPR-01 (alternatives if taken: Pencil In, Inked, Shotlist, Snapdone).
 - [ ] Apple Developer Program enrolment (paid; can take days to approve). Needed for TestFlight and the share extension App Group.
 - [ ] Google Play Console developer account (paid once; identity verification can take days).
 - [ ] Expo account (free) for EAS builds; log in with `npx eas-cli login` when SPR-01 asks.

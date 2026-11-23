@@ -1,0 +1,35 @@
+# secrets and local config (never commit)
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+service-account*.json
+
+# dependencies and build output
+node_modules/
+.expo/
+dist/
+build/
+android/
+ios/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+coverage/
+
+# private eval data (hashes only in git)
+eval/images/own/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

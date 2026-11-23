@@ -1,0 +1,22 @@
+{
+  "schema": "behavior_event",
+  "description": "Purchases: guard block counted by reason with receipt_like.",
+  "input": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2C",
+    "card_id": null,
+    "ts_utc": 1795467900000,
+    "event": "guard_blocked",
+    "guard_reason": "card_number",
+    "receipt_like": true,
+    "source": "auto"
+  },
+  "expected": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2C",
+    "card_id": null,
+    "ts_utc": 1795467900000,
+    "event": "guard_blocked",
+    "guard_reason": "card_number",
+    "receipt_like": true,
+    "source": "auto"
+  }
+}

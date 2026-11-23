@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/behavior_event.schema.json",
+  "title": "BehaviorEvent",
+  "description": "One core.db behavior_event row (DESIGN 3.3, COMP-BEHAVLOG; logEvent(enum...) API). Enums, small integers and ids only: no free text, no screenshot content (hard rule 3; CI grep). The $defs also hold the F8 metric enums (purchases D24, pricing D25) that the server validates counter dims against.",
+  "type": "object",
+  "properties": {
+    "id": { "$ref": "#/$defs/Ulid" },
+    "card_id": {
+      "description": "proposed_action.id this event is about, or null for app-level events (pricing, caps, search, guard blocks).",
+      "anyOf": [{ "$ref": "#/$defs/Ulid" }, { "type": "null" }]
+    },
+    "ts_utc": { "description": "Epoch milliseconds (UTC).", "type": "integer", "minimum": 0 },
+    "local_block": { "description": "Local hour-of-day block (0-23).", "type": "integer", "minimum": 0, "maximum": 23 },
+    "weekday": { "description": "Local weekday, 0 = Monday.", "type": "integer", "minimum": 0, "maximum": 6 },
+    "event": { "$ref": "#/$defs/BehaviorEventName" },
+    "action_type": { "$ref": "common.schema.json#/$defs/ActionKind" },
+    "lead_bucket": { "$ref": "#/$defs/LeadBucket" },
+    "source": { "$ref": "common.schema.json#/$defs/Source" },
+    "gate_state": { "$ref": "common.schema.json#/$defs/GateState" },
+    "field": { "$ref": "#/$defs/FieldName" },
+    "conf_bucket": { "type": "integer", "minimum": 0, "maximum": 9 },
+    "policy_id": { "$ref": "common.schema.json#/$defs/Token" },
+    "shown": { "description": "0 = shadow (would-nudge, not shown), 1 = shown.", "type": "integer", "minimum": 0, "maximum": 1 },
+    "deadline_origin": { "$ref": "common.schema.json#/$defs/DeadlineOrigin" },
+    "nothing_subtype": { "$ref": "common.schema.json#/$defs/NothingSubtype" },
+    "guard_reason": { "$ref": "common.schema.json#/$defs/GuardReason" },
+    "receipt_like": { "type": "boolean" },
+    "pro_door_event": { "$ref": "#/$defs/ProDoorEvent" },
+    "pro_feature": { "$ref": "#/$defs/ProFeature" },
+    "wtp_bucket": { "$ref": "#/$defs/WtpBucket" },
+    "plan_pref": { "$ref": "#/$defs/PlanPref" },
+    "usage_day_bucket": { "$ref": "#/$defs/UsageDayBucket" },
+    "cap_tier": { "$ref": "#/$defs/CapTier" }
+  },
+  "required": ["id", "card_id", "ts_utc", "event"],
+  "$defs": {
+    "Ulid": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "BehaviorEventName": {
+      "description": "Card lifecycle events (DESIGN 3.3) plus purchases (D24) and pricing (D25) events. Purchases confirm/edit/dismiss rates for printed return dates ride the card events with deadline_origin set.",
+      "type": "string",
+      "enum": [
+        "card_created",
+        "notif_shown",
+        "notif_opened",
+        "notif_dismissed",
+        "nudge_scheduled",
+        "field_edited",
+        "confirmed",
+        "dismissed",
+        "undone",
+        "nothing_result",
+        "guard_blocked",
+        "pro_door",
+        "wtp_answered",
+        "plan_pref_answered",
+        "shadow_cap_hit",
+        "import_cap_hit",
+        "search_zero_result",
+        "usage_day"
+      ]
+    },
+    "LeadBucket": {
+      "description": "Time from now to start/due (raw/5_ai_prob_features AI-RESURF-03): <1 d, 1-3 d, 3-7 d, >7 d.",
+      "type": "string",
+      "enum": ["lt1d", "1_3d", "3_7d", "gt7d"]
+    },
+    "FieldName": {
+      "type": "string",
+      "enum": ["title", "start", "end", "location", "due"]
+    },
+    "ProDoorEvent": {
+      "description": "Pricing (D25): Pro-preview door interaction.",
+      "type": "string",
+      "enum": ["view", "tap_feature", "dismiss"]
+    },
+    "ProFeature": {
+      "type": "string",
+      "enum": ["backlog_sweep", "purchases", "expense_export", "semantic_search", "higher_limit", "none"]
+    },
+    "WtpBucket": {
+      "description": "Pricing (D25): optional price-range answer, US dollars per month.",
+      "type": "string",
+      "enum": ["0", "lt1", "1_2", "2_4", "4_6", "gt6"]
+    },
+    "PlanPref": {
+      "type": "string",
+      "enum": ["monthly", "annual", "lifetime", "none"]
+    },
+    "UsageDayBucket": {
+      "description": "Pricing (D25): screenshots processed per day.",
+      "type": "string",
+      "enum": ["0", "1_5", "6_15", "16_30", "31+"]
+    },
+    "CapTier": {
+      "description": "Pricing (D25): tier the cap applied to, on cap events (shadow_cap_hit, import_cap_hit, quota exhaustion).",
+      "$ref": "common.schema.json#/$defs/Tier"
+    },
+    "CounterName": {
+      "description": "F8 counter names known at v1 (Counter.name in the extract request). Informational: the request schema accepts any token-shaped name and the server validates names and dims; COMP-METRICS adds the general F8 names.",
+      "type": "string",
+      "enum": [
+        "card_state",
+        "nothing_subtype",
+        "nothing_local",
+        "guard_block",
+        "receipt_like",
+        "deadline_origin",
+        "deadline_outcome",
+        "past_date",
+        "pro_door_event",
+        "wtp_bucket",
+        "plan_pref",
+        "shadow_cap_hit",
+        "import_cap_hit",
+        "usage_day_bucket",
+        "search_zero_result",
+        "cap_tier"
+      ]
+    }
+  }
+}

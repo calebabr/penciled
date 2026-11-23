@@ -1,0 +1,60 @@
+{
+  "schema": "inbox",
+  "description": "Guard hit on a receipt: local only, reason counted, receipt_like.",
+  "input": {
+    "schema_version": 1,
+    "key": "inbox-fixture-0001",
+    "written_at": 1795467852000,
+    "asset_ref": "content://media/external/images/media/1042",
+    "sha256": "3f1c9a5e2b7d4f6081a9c3e5d7b9f1a2c4e6081a3c5e7f9b1d3f5a7c9e1b3d5f",
+    "captured_at": "2026-11-18T21:04:11Z",
+    "status": "local_only",
+    "guard": {
+      "sensitive": true,
+      "guard_reason": "card_number",
+      "reason_counts": {
+        "card_number": 1,
+        "cvv": 1
+      },
+      "receipt_like": true,
+      "chat": "not_chat",
+      "actionable": true
+    },
+    "ocr": {
+      "lines": [
+        {
+          "t": "Order total",
+          "c": 0.9
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema_version": 1,
+    "key": "inbox-fixture-0001",
+    "written_at": 1795467852000,
+    "asset_ref": "content://media/external/images/media/1042",
+    "sha256": "3f1c9a5e2b7d4f6081a9c3e5d7b9f1a2c4e6081a3c5e7f9b1d3f5a7c9e1b3d5f",
+    "captured_at": "2026-11-18T21:04:11Z",
+    "status": "local_only",
+    "guard": {
+      "sensitive": true,
+      "guard_reason": "card_number",
+      "reason_counts": {
+        "card_number": 1,
+        "cvv": 1
+      },
+      "receipt_like": true,
+      "chat": "not_chat",
+      "actionable": true
+    },
+    "ocr": {
+      "lines": [
+        {
+          "t": "Order total",
+          "c": 0.9
+        }
+      ]
+    }
+  }
+}

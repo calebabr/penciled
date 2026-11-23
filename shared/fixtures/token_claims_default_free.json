@@ -1,0 +1,8 @@
+{
+  "schema": "token_claims",
+  "description": "Tier defaults to free when unset (D25).",
+  "input": {},
+  "expected": {
+    "tier": "free"
+  }
+}

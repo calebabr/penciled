@@ -1,0 +1,14 @@
+{
+  "schema": "error",
+  "description": "503 cap or kill switch: basic card.",
+  "input": {
+    "schema_version": 1,
+    "code": "service_paused",
+    "basic": true
+  },
+  "expected": {
+    "schema_version": 1,
+    "code": "service_paused",
+    "basic": true
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "behavior_event",
+  "description": "Card lifecycle event (enums only).",
+  "input": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W1X",
+    "card_id": "01JF8K2M3N4P5Q6R7S8T9V0W1Y",
+    "ts_utc": 1795467851000,
+    "local_block": 21,
+    "weekday": 2,
+    "event": "card_created",
+    "action_type": "event",
+    "lead_bucket": "1_3d",
+    "source": "auto",
+    "gate_state": "ready",
+    "conf_bucket": 9,
+    "policy_id": "shadow-v0",
+    "shown": 0
+  },
+  "expected": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W1X",
+    "card_id": "01JF8K2M3N4P5Q6R7S8T9V0W1Y",
+    "ts_utc": 1795467851000,
+    "local_block": 21,
+    "weekday": 2,
+    "event": "card_created",
+    "action_type": "event",
+    "lead_bucket": "1_3d",
+    "source": "auto",
+    "gate_state": "ready",
+    "conf_bucket": 9,
+    "policy_id": "shadow-v0",
+    "shown": 0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "error",
+  "description": "429 with retry_after mirroring Retry-After.",
+  "input": {
+    "schema_version": 1,
+    "code": "rate_limited",
+    "retry_after": 60
+  },
+  "expected": {
+    "schema_version": 1,
+    "code": "rate_limited",
+    "retry_after": 60
+  }
+}

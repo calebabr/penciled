@@ -1,0 +1,80 @@
+{
+  "schema": "rules_fixture",
+  "description": "Rules parity fixture file format example.",
+  "input": {
+    "schema_version": 1,
+    "rules_version": "r0-placeholder",
+    "cases": [
+      {
+        "id": "flyer-1",
+        "tags": [
+          "not_chat"
+        ],
+        "image": {
+          "width": 1080,
+          "height": 2400
+        },
+        "lines": [
+          {
+            "t": "Pizza Night! Fri 7pm",
+            "c": 0.93,
+            "box": {
+              "l": 100,
+              "t": 200,
+              "r": 980,
+              "b": 260
+            }
+          }
+        ],
+        "expect": {
+          "sensitive": false,
+          "guard_reason": null,
+          "chat": "not_chat",
+          "actionable": true,
+          "receipt_like": false,
+          "redacted_lines": [
+            "Pizza Night! Fri 7pm"
+          ]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "schema_version": 1,
+    "rules_version": "r0-placeholder",
+    "cases": [
+      {
+        "id": "flyer-1",
+        "tags": [
+          "not_chat"
+        ],
+        "image": {
+          "width": 1080,
+          "height": 2400
+        },
+        "lines": [
+          {
+            "t": "Pizza Night! Fri 7pm",
+            "c": 0.93,
+            "box": {
+              "l": 100,
+              "t": 200,
+              "r": 980,
+              "b": 260
+            }
+          }
+        ],
+        "expect": {
+          "sensitive": false,
+          "guard_reason": null,
+          "chat": "not_chat",
+          "actionable": true,
+          "receipt_like": false,
+          "redacted_lines": [
+            "Pizza Night! Fri 7pm"
+          ]
+        }
+      }
+    ]
+  }
+}

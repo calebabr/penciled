@@ -1,0 +1,20 @@
+{
+  "schema": "behavior_event",
+  "description": "Pricing: would have exceeded 30/day; usage bucket and cap tier.",
+  "input": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2F",
+    "card_id": null,
+    "ts_utc": 1795467900000,
+    "event": "shadow_cap_hit",
+    "cap_tier": "free",
+    "usage_day_bucket": "31+"
+  },
+  "expected": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2F",
+    "card_id": null,
+    "ts_utc": 1795467900000,
+    "event": "shadow_cap_hit",
+    "cap_tier": "free",
+    "usage_day_bucket": "31+"
+  }
+}

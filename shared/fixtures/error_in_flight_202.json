@@ -1,0 +1,14 @@
+{
+  "schema": "error",
+  "description": "202 in-flight duplicate: retry_after seconds.",
+  "input": {
+    "schema_version": 1,
+    "code": "in_flight",
+    "retry_after": 3
+  },
+  "expected": {
+    "schema_version": 1,
+    "code": "in_flight",
+    "retry_after": 3
+  }
+}

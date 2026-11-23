@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "penciled-contracts"
+version = "1.0.0"
+description = "Penciled shared contracts v1 (pydantic models generated from shared/schema)"
+requires-python = ">=3.11"
+dependencies = [
+    # validate_by_name / serialize_by_alias config keys need 2.11+
+    "pydantic>=2.11,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "jsonschema>=4.23,<5",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[tool.setuptools]
+packages = ["penciled_contracts"]
+
+[tool.setuptools.package-data]
+penciled_contracts = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "T20"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["T20"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["penciled_contracts"]

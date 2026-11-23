@@ -1,0 +1,10 @@
+{
+  "schema": "behavior_event",
+  "description": "event is an enum; free text rejected.",
+  "input": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2G",
+    "card_id": null,
+    "ts_utc": 1,
+    "event": "user typed something"
+  }
+}

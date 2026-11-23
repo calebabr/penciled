@@ -1,0 +1,16 @@
+{
+  "schema": "worker_config",
+  "description": "A different format_version is not v1.",
+  "input": {
+    "format_version": 2,
+    "app_version": "0.3.1",
+    "written_at": 1795467851000,
+    "token": "fixture-token-not-a-secret",
+    "server_url": "https://api.penciled.invalid",
+    "install_salt": "fixture-salt-not-a-secret",
+    "install_watermark": 1795400000000,
+    "chat_local_only": true,
+    "image_autodetect_opt_in": false,
+    "autodetect_enabled": true
+  }
+}

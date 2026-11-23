@@ -1,0 +1,8 @@
+{
+  "schema": "error",
+  "description": "Error code is a closed enum.",
+  "input": {
+    "schema_version": 1,
+    "code": "teapot"
+  }
+}

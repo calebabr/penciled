@@ -1,0 +1,21 @@
+{
+  "schema": "behavior_event",
+  "description": "Pricing: Pro-preview feature tap (D25); unknown key dropped.",
+  "input": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2D",
+    "card_id": null,
+    "ts_utc": 1795467900000,
+    "event": "pro_door",
+    "pro_door_event": "tap_feature",
+    "pro_feature": "semantic_search",
+    "note": "dropped"
+  },
+  "expected": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2D",
+    "card_id": null,
+    "ts_utc": 1795467900000,
+    "event": "pro_door",
+    "pro_door_event": "tap_feature",
+    "pro_feature": "semantic_search"
+  }
+}

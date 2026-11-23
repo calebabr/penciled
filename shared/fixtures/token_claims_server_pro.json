@@ -1,0 +1,11 @@
+{
+  "schema": "token_claims",
+  "description": "Server-set tier; unknown claim dropped.",
+  "input": {
+    "tier": "pro",
+    "billing_id": "dropped"
+  },
+  "expected": {
+    "tier": "pro"
+  }
+}

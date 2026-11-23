@@ -1,0 +1,11 @@
+{
+  "schema": "behavior_event",
+  "description": "wtp_bucket is a closed enum.",
+  "input": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2H",
+    "card_id": null,
+    "ts_utc": 1,
+    "event": "wtp_answered",
+    "wtp_bucket": "10"
+  }
+}

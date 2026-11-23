@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/token_claims.schema.json",
+  "title": "TokenClaims",
+  "description": "Server-internal claims carried on the token record (COMP-AUTH / COMP-QUOTA, D25). tier is server-controlled, defaults to free, and is NEVER read from a client request: ExtractRequest has no tier property, so a client-sent tier is dropped on parse. No billing in the beta; per-tier limits live in COMP-QUOTA config.",
+  "type": "object",
+  "properties": {
+    "tier": { "$ref": "common.schema.json#/$defs/Tier", "default": "free" }
+  }
+}

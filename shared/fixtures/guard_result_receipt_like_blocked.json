@@ -1,0 +1,26 @@
+{
+  "schema": "guard_result",
+  "description": "Guard counts + receipt_like (D24).",
+  "input": {
+    "sensitive": true,
+    "guard_reason": "account_routing",
+    "reason_counts": {
+      "account_routing": 2,
+      "balance": 1
+    },
+    "receipt_like": true,
+    "chat": "chat_uncertain",
+    "actionable": false
+  },
+  "expected": {
+    "sensitive": true,
+    "guard_reason": "account_routing",
+    "reason_counts": {
+      "account_routing": 2,
+      "balance": 1
+    },
+    "receipt_like": true,
+    "chat": "chat_uncertain",
+    "actionable": false
+  }
+}

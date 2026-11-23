@@ -1,0 +1,20 @@
+{
+  "schema": "behavior_event",
+  "description": "Purchases: confirm on a printed_return_by card (D24).",
+  "input": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2A",
+    "card_id": "01JF8K2M3N4P5Q6R7S8T9V0W2B",
+    "ts_utc": 1795467900000,
+    "event": "confirmed",
+    "action_type": "deadline",
+    "deadline_origin": "printed_return_by"
+  },
+  "expected": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2A",
+    "card_id": "01JF8K2M3N4P5Q6R7S8T9V0W2B",
+    "ts_utc": 1795467900000,
+    "event": "confirmed",
+    "action_type": "deadline",
+    "deadline_origin": "printed_return_by"
+  }
+}

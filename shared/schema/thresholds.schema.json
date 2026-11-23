@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/thresholds.schema.json",
+  "title": "ThresholdsFile",
+  "description": "Format of shared/thresholds/thresholds_vN.json, written by COMP-CALIB and loaded by COMP-GATE (AI-CONF, DESIGN 5.5). Changes only through a human-approved baseline-bump commit with the eval report attached (hard rule 9). Beta user data may only tighten thresholds.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "thresholds_version": {
+      "description": "Matches the file name suffix (v1 for thresholds_v1.json) and travels as ExtractResponse.thresholds_version.",
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/IsoDateTime" },
+    "provenance": { "$ref": "#/$defs/Provenance" },
+    "verbal_base": { "$ref": "#/$defs/VerbalBase" },
+    "caps": { "$ref": "#/$defs/Caps" },
+    "bounds": { "$ref": "#/$defs/Bounds" },
+    "states": { "$ref": "#/$defs/StateThresholds" },
+    "optional_field_min": {
+      "description": "An optional field (end, location) scoring below this is cleared to missing and leaves the card score.",
+      "$ref": "common.schema.json#/$defs/Probability"
+    },
+    "ask_alarm_rate": {
+      "description": "Over-asking alarm: more than this share of cards in Ask triggers a human-reviewed loosening.",
+      "$ref": "common.schema.json#/$defs/Probability"
+    },
+    "cost": { "$ref": "#/$defs/CostRule" },
+    "calibration": { "$ref": "#/$defs/Calibration" }
+  },
+  "required": [
+    "schema_version",
+    "thresholds_version",
+    "created_at",
+    "provenance",
+    "verbal_base",
+    "caps",
+    "bounds",
+    "states",
+    "optional_field_min",
+    "ask_alarm_rate",
+    "cost"
+  ],
+  "$defs": {
+    "Provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "description": "initial = DESIGN 5.5 starting constants (est.); calibrated = fitted by COMP-CALIB on the eval set.",
+          "type": "string",
+          "enum": ["initial", "calibrated"]
+        },
+        "eval_report": { "description": "Repo-relative path of the report attached to the bump commit.", "type": "string", "maxLength": 256 },
+        "seed": { "type": "integer", "minimum": 0 },
+        "eval_manifest_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      },
+      "required": ["kind"]
+    },
+    "VerbalBase": {
+      "type": "object",
+      "properties": {
+        "high": { "$ref": "common.schema.json#/$defs/Probability" },
+        "medium": { "$ref": "common.schema.json#/$defs/Probability" },
+        "low": { "$ref": "common.schema.json#/$defs/Probability" }
+      },
+      "required": ["high", "medium", "low"]
+    },
+    "Caps": {
+      "type": "object",
+      "properties": {
+        "evidence_fuzzy": { "$ref": "common.schema.json#/$defs/Probability" },
+        "ocr_mid": { "$ref": "common.schema.json#/$defs/Probability" },
+        "ocr_low": { "$ref": "common.schema.json#/$defs/Probability" },
+        "resolve_assumed": { "$ref": "common.schema.json#/$defs/Probability" },
+        "resolve_needs_review": { "$ref": "common.schema.json#/$defs/Probability" },
+        "validate_failure": { "$ref": "common.schema.json#/$defs/Probability" }
+      },
+      "required": ["evidence_fuzzy", "ocr_mid", "ocr_low", "resolve_assumed", "resolve_needs_review", "validate_failure"]
+    },
+    "Bounds": {
+      "type": "object",
+      "properties": {
+        "evidence_fuzzy_min": { "description": "Fuzzy evidence match below this clears the field.", "$ref": "common.schema.json#/$defs/Probability" },
+        "ocr_high_min": { "description": "OCR line confidence at or above this is uncapped.", "$ref": "common.schema.json#/$defs/Probability" },
+        "ocr_low_max": { "description": "OCR line confidence below this gets the ocr_low cap.", "$ref": "common.schema.json#/$defs/Probability" }
+      },
+      "required": ["evidence_fuzzy_min", "ocr_high_min", "ocr_low_max"]
+    },
+    "StateThresholds": {
+      "type": "object",
+      "properties": {
+        "ready_min": { "$ref": "common.schema.json#/$defs/Probability" },
+        "ask_min": { "$ref": "common.schema.json#/$defs/Probability" }
+      },
+      "required": ["ready_min", "ask_min"]
+    },
+    "CostRule": {
+      "description": "Ask when (1 - p) * c_wrong > c_question.",
+      "type": "object",
+      "properties": {
+        "c_wrong": { "type": "number", "exclusiveMinimum": 0 },
+        "c_question": { "type": "number", "exclusiveMinimum": 0 }
+      },
+      "required": ["c_wrong", "c_question"]
+    },
+    "Calibration": {
+      "description": "Offline pooled Platt fit (report only in the beta; not used at runtime).",
+      "type": "object",
+      "properties": {
+        "method": { "type": "string", "enum": ["platt"] },
+        "features": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/Token" }, "maxItems": 64 },
+        "coef": { "type": "array", "items": { "type": "number" }, "maxItems": 64 },
+        "intercept": { "type": "number" },
+        "ece": { "type": "number", "minimum": 0 },
+        "brier": { "type": "number", "minimum": 0 }
+      },
+      "required": ["method", "features", "coef", "intercept"]
+    }
+  }
+}

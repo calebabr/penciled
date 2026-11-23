@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/extract_response.schema.json",
+  "title": "ExtractResponse",
+  "description": "200 body of POST /v1/extract (DESIGN 3.7). A nothing-to-do result is class=nothing, gate_state=none, actions=[] and nothing_subtype set (set iff class is nothing; the server enforces that pairing). quota is optional (D25); older clients ignore it.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "request_id": { "$ref": "common.schema.json#/$defs/Token" },
+    "class": { "$ref": "common.schema.json#/$defs/ScreenClass" },
+    "gate_state": { "$ref": "common.schema.json#/$defs/GateState" },
+    "card_score": {
+      "anyOf": [{ "$ref": "common.schema.json#/$defs/Probability" }, { "type": "null" }]
+    },
+    "actions": {
+      "type": "array",
+      "items": { "$ref": "proposed_action.schema.json" },
+      "maxItems": 3
+    },
+    "nothing_subtype": { "$ref": "common.schema.json#/$defs/NothingSubtype" },
+    "notification": {
+      "anyOf": [{ "$ref": "#/$defs/Notification" }, { "type": "null" }]
+    },
+    "anchor": { "$ref": "#/$defs/Anchor" },
+    "escalate_hint": { "type": "boolean" },
+    "raw": {
+      "description": "Opaque model output, kept on device for resolve_only. Content; never log.",
+      "type": ["object", "null"]
+    },
+    "min_app_version": { "$ref": "common.schema.json#/$defs/VersionString" },
+    "model": { "$ref": "common.schema.json#/$defs/Token" },
+    "prompt_version": { "$ref": "common.schema.json#/$defs/Token" },
+    "thresholds_version": { "$ref": "common.schema.json#/$defs/Token" },
+    "quota": { "$ref": "common.schema.json#/$defs/Quota" }
+  },
+  "required": [
+    "schema_version",
+    "request_id",
+    "class",
+    "gate_state",
+    "card_score",
+    "actions",
+    "notification",
+    "anchor",
+    "escalate_hint",
+    "raw",
+    "min_app_version",
+    "model",
+    "prompt_version",
+    "thresholds_version"
+  ],
+  "$defs": {
+    "NotificationKind": {
+      "description": "NTF-READY (one per card) or NTF-CHECK (grouped). Both carry [Review] only (D19).",
+      "type": "string",
+      "enum": ["ready", "check"]
+    },
+    "Notification": {
+      "description": "Server-templated notification copy (AI-PROPOSE). Content; never log.",
+      "type": "object",
+      "properties": {
+        "kind": { "$ref": "#/$defs/NotificationKind" },
+        "text": { "type": "string", "minLength": 1, "maxLength": 200 }
+      },
+      "required": ["kind", "text"]
+    },
+    "AnchorSource": {
+      "description": "Where the resolver anchor came from: an OCR day header, capture time, import time, or a user override.",
+      "type": "string",
+      "enum": ["header", "capture", "import", "override"]
+    },
+    "Anchor": {
+      "type": "object",
+      "properties": {
+        "iso": { "$ref": "common.schema.json#/$defs/IsoDateTime" },
+        "source": { "$ref": "#/$defs/AnchorSource" }
+      },
+      "required": ["iso", "source"]
+    }
+  }
+}

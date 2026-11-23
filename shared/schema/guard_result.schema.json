@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/guard_result.schema.json",
+  "title": "GuardResult",
+  "description": "Content-free summary of the on-device rules.json pass (COMP-RULES classify(), DESIGN 5.1, 5.4b). Enums, booleans and counts only, so it can be stored, counted and written to the inbox. The redacted lines and the placeholder map are NOT part of this object.",
+  "type": "object",
+  "properties": {
+    "sensitive": { "type": "boolean" },
+    "guard_reason": {
+      "description": "First guard rule that hit (first hit wins), or null when not sensitive.",
+      "anyOf": [{ "$ref": "common.schema.json#/$defs/GuardReason" }, { "type": "null" }]
+    },
+    "reason_counts": { "$ref": "#/$defs/GuardReasonCounts" },
+    "receipt_like": {
+      "description": "rules.json receipt keyword list matched (evaluated on device; lets a blocked receipt be counted without sending anything).",
+      "type": "boolean"
+    },
+    "chat": { "$ref": "common.schema.json#/$defs/ChatVerdict" },
+    "actionable": {
+      "description": "AI-GATE prefilter verdict (could be actionable).",
+      "type": "boolean"
+    }
+  },
+  "required": ["sensitive", "guard_reason", "reason_counts", "receipt_like", "chat", "actionable"],
+  "$defs": {
+    "GuardReasonCounts": {
+      "description": "Number of guard-rule hits per guard_reason for one item (absent = 0).",
+      "type": "object",
+      "properties": {
+        "card_number": { "type": "integer", "minimum": 0 },
+        "account_routing": { "type": "integer", "minimum": 0 },
+        "balance": { "type": "integer", "minimum": 0 },
+        "password_otp": { "type": "integer", "minimum": 0 },
+        "cvv": { "type": "integer", "minimum": 0 },
+        "gov_id": { "type": "integer", "minimum": 0 },
+        "health": { "type": "integer", "minimum": 0 },
+        "other": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

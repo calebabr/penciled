@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "rules_version": "r0-placeholder",
+  "cases": [
+    {
+      "id": "flyer-pizza-night",
+      "tags": ["not_chat", "actionable"],
+      "image": { "width": 1080, "height": 2400 },
+      "lines": [
+        { "t": "Pizza Night!", "c": 0.95, "box": { "l": 120, "t": 300, "r": 960, "b": 380 } },
+        { "t": "Fri 7pm, call 555-010-0199", "c": 0.9, "box": { "l": 120, "t": 420, "r": 960, "b": 480 } }
+      ],
+      "expect": {
+        "sensitive": false,
+        "guard_reason": null,
+        "chat": "not_chat",
+        "actionable": true,
+        "receipt_like": false,
+        "redacted_lines": ["Pizza Night!", "Fri 7pm, call [PHONE_1]"]
+      }
+    },
+    {
+      "id": "receipt-cvv-blocked",
+      "tags": ["receipt", "sensitive"],
+      "image": { "width": 1080, "height": 2400 },
+      "lines": [
+        { "t": "Order total 42.10", "c": 0.93, "box": { "l": 80, "t": 200, "r": 1000, "b": 260 } },
+        { "t": "CVV 000", "c": 0.9, "box": { "l": 80, "t": 300, "r": 400, "b": 360 } }
+      ],
+      "expect": {
+        "sensitive": true,
+        "guard_reason": "cvv",
+        "chat": "not_chat",
+        "actionable": false,
+        "receipt_like": true
+      }
+    },
+    {
+      "id": "receipt-return-by",
+      "tags": ["receipt", "printed_return_by"],
+      "image": { "width": 1080, "height": 2400 },
+      "lines": [
+        { "t": "Order summary", "c": 0.94, "box": { "l": 80, "t": 200, "r": 700, "b": 260 } },
+        { "t": "Return by Dec 14", "c": 0.92, "box": { "l": 80, "t": 300, "r": 700, "b": 360 } }
+      ],
+      "expect": {
+        "sensitive": false,
+        "guard_reason": null,
+        "chat": "not_chat",
+        "actionable": true,
+        "receipt_like": true,
+        "redacted_lines": ["Order summary", "Return by Dec 14"],
+        "deadline_origin": "printed_return_by"
+      }
+    },
+    {
+      "id": "chat-two-senders",
+      "tags": ["chat"],
+      "image": { "width": 1080, "height": 2400 },
+      "lines": [
+        { "t": "Today 3:12 PM", "c": 0.9, "box": { "l": 400, "t": 100, "r": 680, "b": 140 } },
+        { "t": "dinner sat?", "c": 0.92, "box": { "l": 40, "t": 200, "r": 400, "b": 260 } },
+        { "t": "yes 7pm works", "c": 0.92, "box": { "l": 640, "t": 300, "r": 1040, "b": 360 } },
+        { "t": "great see you", "c": 0.92, "box": { "l": 40, "t": 400, "r": 420, "b": 460 } },
+        { "t": "3:15 PM", "c": 0.9, "box": { "l": 460, "t": 480, "r": 620, "b": 520 } },
+        { "t": "Delivered", "c": 0.9, "box": { "l": 860, "t": 540, "r": 1040, "b": 580 } }
+      ],
+      "expect": {
+        "sensitive": false,
+        "guard_reason": null,
+        "chat": "chat",
+        "actionable": true,
+        "receipt_like": false,
+        "redacted_lines": ["Today 3:12 PM", "dinner sat?", "yes 7pm works", "great see you", "3:15 PM", "Delivered"]
+      }
+    }
+  ]
+}

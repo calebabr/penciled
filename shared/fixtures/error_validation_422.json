@@ -1,0 +1,38 @@
+{
+  "schema": "error",
+  "description": "Content-free 422: paths and error types only, never input; unknown input echo dropped.",
+  "input": {
+    "schema_version": 1,
+    "code": "invalid_request",
+    "issues": [
+      {
+        "loc": [
+          "body",
+          "ocr",
+          "lines",
+          0,
+          "t"
+        ],
+        "type": "string_too_long",
+        "input": "dropped"
+      }
+    ],
+    "detail": "dropped"
+  },
+  "expected": {
+    "schema_version": 1,
+    "code": "invalid_request",
+    "issues": [
+      {
+        "loc": [
+          "body",
+          "ocr",
+          "lines",
+          0,
+          "t"
+        ],
+        "type": "string_too_long"
+      }
+    ]
+  }
+}

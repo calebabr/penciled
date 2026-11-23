@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "rules_version": "r0-placeholder",
+  "guard": {
+    "rules": [
+      { "id": "card_number_16", "reason": "card_number", "pattern": "\\b[0-9]{4}[ -]?[0-9]{4}[ -]?[0-9]{4}[ -]?[0-9]{4}\\b", "ignore_case": false },
+      { "id": "routing_account", "reason": "account_routing", "pattern": "\\b(routing|account) (number|no\\.?|#)", "ignore_case": true },
+      { "id": "balance_word", "reason": "balance", "pattern": "\\b(available|current|account) balance\\b", "ignore_case": true },
+      { "id": "password_otp", "reason": "password_otp", "pattern": "\\b(password|passcode|one-time code|verification code)\\b", "ignore_case": true },
+      { "id": "cvv", "reason": "cvv", "pattern": "\\b(cvv|cvc|security code)\\b", "ignore_case": true },
+      { "id": "ssn", "reason": "gov_id", "pattern": "\\b[0-9]{3}-[0-9]{2}-[0-9]{4}\\b", "ignore_case": false },
+      { "id": "health_terms", "reason": "health", "pattern": "\\b(diagnosis|prescription|rx #)\\b", "ignore_case": true }
+    ]
+  },
+  "chat": {
+    "edge_fraction": 0.15,
+    "min_edge_boxes": 3,
+    "min_side_switches": 2,
+    "timestamp_pattern": "^[0-9]{1,2}:[0-9]{2}( ?[AP]M)?$",
+    "min_time_marker_lines": 2,
+    "day_header_words": ["Today", "Yesterday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "name_line_max_words": 3,
+    "min_name_lines": 2,
+    "name_prefix_pattern": "^[A-Z][A-Za-z]{1,20}:",
+    "messaging_ui_words": ["iMessage", "Text Message", "Delivered", "Read", "Type a message"],
+    "chat_min_groups": 2,
+    "uncertain_min_groups": 1
+  },
+  "gate": {
+    "patterns": [
+      { "id": "weekday", "pattern": "\\b(mon|tue|wed|thu|fri|sat|sun)[a-z]*\\b", "ignore_case": true },
+      { "id": "month", "pattern": "\\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\\.? [0-9]{1,2}\\b", "ignore_case": true },
+      { "id": "numeric_date", "pattern": "\\b[0-9]{1,2}/[0-9]{1,2}(/[0-9]{2,4})?\\b", "ignore_case": false },
+      { "id": "time", "pattern": "\\b[0-9]{1,2}(:[0-9]{2})? ?(am|pm)\\b|\\b[0-9]{1,2}:[0-9]{2}\\b", "ignore_case": true },
+      { "id": "relative", "pattern": "\\b(today|tonight|tomorrow|next week|this weekend)\\b", "ignore_case": true },
+      { "id": "deadline_words", "pattern": "\\b(due|deadline|rsvp|by|until|expires|return by)\\b", "ignore_case": true }
+    ]
+  },
+  "redact": {
+    "rules": [
+      { "id": "email", "kind": "email", "pattern": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}", "ignore_case": false },
+      { "id": "phone_us", "kind": "phone", "pattern": "(\\+1[ .-]?)?\\(?[0-9]{3}\\)?[ .-]?[0-9]{3}[ .-]?[0-9]{4}", "ignore_case": false },
+      { "id": "digit_run_7", "kind": "digits", "pattern": "[0-9]{7,}", "ignore_case": false },
+      { "id": "otp_like", "kind": "otp", "pattern": "\\b[0-9]{4,6}\\b(?= is your)", "ignore_case": true }
+    ]
+  },
+  "receipt_like": {
+    "keywords": ["order", "subtotal", "receipt", "order total", "qty", "shipping", "return policy"]
+  },
+  "deadline_origin": {
+    "return_phrases": [
+      { "id": "return_by", "pattern": "return(s|able)? (by|until|through|before)", "ignore_case": true },
+      { "id": "return_window_ends", "pattern": "return window (ends|closes)", "ignore_case": true },
+      { "id": "last_day_to_return", "pattern": "last day to return", "ignore_case": true }
+    ]
+  }
+}

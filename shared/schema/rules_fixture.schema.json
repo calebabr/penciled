@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/rules_fixture.schema.json",
+  "title": "RulesFixtureFile",
+  "description": "Format of shared/rules/fixtures/*.json: parity cases run against both the TS and the Kotlin rules.json implementations (EVAL-GUARD-PARITY). Synthetic text only; never real screenshot content.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "rules_version": {
+      "description": "rules.json version these expectations were written against.",
+      "$ref": "common.schema.json#/$defs/Token"
+    },
+    "cases": { "type": "array", "items": { "$ref": "#/$defs/RulesCase" }, "minItems": 1, "maxItems": 5000 }
+  },
+  "required": ["schema_version", "rules_version", "cases"],
+  "$defs": {
+    "Box": {
+      "description": "Line bounding box in image pixels (left, top, right, bottom).",
+      "type": "object",
+      "properties": {
+        "l": { "type": "integer", "minimum": 0 },
+        "t": { "type": "integer", "minimum": 0 },
+        "r": { "type": "integer", "minimum": 0 },
+        "b": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["l", "t", "r", "b"]
+    },
+    "ImageSize": {
+      "type": "object",
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["width", "height"]
+    },
+    "FixtureLine": {
+      "type": "object",
+      "properties": {
+        "t": { "type": "string", "maxLength": 2000 },
+        "c": { "$ref": "common.schema.json#/$defs/Probability" },
+        "box": { "$ref": "#/$defs/Box" }
+      },
+      "required": ["t", "c", "box"]
+    },
+    "RulesExpectation": {
+      "type": "object",
+      "properties": {
+        "sensitive": { "type": "boolean" },
+        "guard_reason": {
+          "anyOf": [{ "$ref": "common.schema.json#/$defs/GuardReason" }, { "type": "null" }]
+        },
+        "chat": { "$ref": "common.schema.json#/$defs/ChatVerdict" },
+        "actionable": { "type": "boolean" },
+        "receipt_like": { "type": "boolean" },
+        "redacted_lines": {
+          "description": "Expected redacted text per line, with typed placeholders. Omitted when the case is sensitive (nothing leaves the device).",
+          "type": "array",
+          "items": { "type": "string", "maxLength": 2000 }
+        },
+        "deadline_origin": { "$ref": "common.schema.json#/$defs/DeadlineOrigin" }
+      },
+      "required": ["sensitive", "guard_reason", "chat", "actionable", "receipt_like"]
+    },
+    "RulesCase": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/Token" },
+        "tags": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/Token" }, "maxItems": 20 },
+        "image": { "$ref": "#/$defs/ImageSize" },
+        "lines": { "type": "array", "items": { "$ref": "#/$defs/FixtureLine" }, "maxItems": 500 },
+        "expect": { "$ref": "#/$defs/RulesExpectation" }
+      },
+      "required": ["id", "image", "lines", "expect"]
+    }
+  }
+}

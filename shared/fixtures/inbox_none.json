@@ -1,0 +1,38 @@
+{
+  "schema": "inbox",
+  "description": "AI-GATE said nothing: silent.",
+  "input": {
+    "schema_version": 1,
+    "key": "inbox-fixture-0001",
+    "written_at": 1795467852000,
+    "asset_ref": "content://media/external/images/media/1042",
+    "sha256": "3f1c9a5e2b7d4f6081a9c3e5d7b9f1a2c4e6081a3c5e7f9b1d3f5a7c9e1b3d5f",
+    "captured_at": "2026-11-18T21:04:11Z",
+    "status": "none",
+    "guard": {
+      "sensitive": false,
+      "guard_reason": null,
+      "reason_counts": {},
+      "receipt_like": false,
+      "chat": "not_chat",
+      "actionable": false
+    }
+  },
+  "expected": {
+    "schema_version": 1,
+    "key": "inbox-fixture-0001",
+    "written_at": 1795467852000,
+    "asset_ref": "content://media/external/images/media/1042",
+    "sha256": "3f1c9a5e2b7d4f6081a9c3e5d7b9f1a2c4e6081a3c5e7f9b1d3f5a7c9e1b3d5f",
+    "captured_at": "2026-11-18T21:04:11Z",
+    "status": "none",
+    "guard": {
+      "sensitive": false,
+      "guard_reason": null,
+      "reason_counts": {},
+      "receipt_like": false,
+      "chat": "not_chat",
+      "actionable": false
+    }
+  }
+}

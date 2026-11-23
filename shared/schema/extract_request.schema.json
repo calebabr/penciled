@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/extract_request.schema.json",
+  "title": "ExtractRequest",
+  "description": "POST /v1/extract body (DESIGN 3.7). There is deliberately no `tier` property: a client-sent tier is an unknown key and is dropped on parse (D25). Unknown keys are dropped, never rejected. The server rejects (422) image_b64 when is_chat is true or image_allowed is false; that cross-field rule lives in the server, not here.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "client_version": { "$ref": "common.schema.json#/$defs/VersionString" },
+    "idempotency_key": {
+      "description": "HMAC(install_salt, sha256) : mode(text|img) : prompt_version : schema_version : rerun. Stable across automatic retries; a user Try again increments rerun.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9_\\-]+:(text|img):[A-Za-z0-9_.\\-]+:[0-9]+:[0-9]+$"
+    },
+    "mode": { "type": "string", "enum": ["extract", "resolve_only"] },
+    "priority": {
+      "description": "Optional; the beta server ignores it (raw/4_rebuttal_scale #5).",
+      "type": "string",
+      "enum": ["live", "backlog", "batch"],
+      "default": "live"
+    },
+    "source": { "$ref": "common.schema.json#/$defs/Source" },
+    "captured_at": { "$ref": "common.schema.json#/$defs/IsoDateTime" },
+    "anchor_override": {
+      "description": "Set when the user taps the anchor caption (resolve_only).",
+      "anyOf": [{ "$ref": "common.schema.json#/$defs/IsoDateTime" }, { "type": "null" }]
+    },
+    "tz": { "$ref": "common.schema.json#/$defs/TimeZoneId" },
+    "locale": { "$ref": "common.schema.json#/$defs/Locale" },
+    "ocr": { "$ref": "common.schema.json#/$defs/OcrBlock" },
+    "is_chat": { "type": "boolean" },
+    "image_allowed": { "type": "boolean" },
+    "image_b64": { "type": ["string", "null"] },
+    "raw": {
+      "description": "Opaque model output echoed back for mode resolve_only. Content; never log.",
+      "type": ["object", "null"]
+    },
+    "counters": {
+      "description": "F8 daily counters piggybacking on the request. Dims are validated server-side against the enums in behavior_event.schema.json $defs.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/Counter" },
+      "maxItems": 500
+    }
+  },
+  "required": [
+    "schema_version",
+    "client_version",
+    "idempotency_key",
+    "mode",
+    "source",
+    "captured_at",
+    "anchor_override",
+    "tz",
+    "locale",
+    "ocr",
+    "is_chat",
+    "image_allowed",
+    "image_b64"
+  ],
+  "$defs": {
+    "Counter": {
+      "description": "One count-only metric row. name and dim are token-shaped (no free text).",
+      "type": "object",
+      "properties": {
+        "day": { "$ref": "common.schema.json#/$defs/IsoDate" },
+        "name": { "$ref": "common.schema.json#/$defs/Token" },
+        "dim": { "$ref": "common.schema.json#/$defs/Token" },
+        "n": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["day", "name", "dim", "n"]
+    }
+  }
+}

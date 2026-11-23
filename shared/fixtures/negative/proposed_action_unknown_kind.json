@@ -1,0 +1,41 @@
+{
+  "schema": "proposed_action",
+  "description": "Only event and deadline kinds exist.",
+  "input": {
+    "kind": "purchase",
+    "fields": {
+      "title": {
+        "value": "Pizza night",
+        "flag": "ok",
+        "blocking": false,
+        "score": 0.95,
+        "src_span": {
+          "line": 0,
+          "start": 0,
+          "end": 11
+        }
+      },
+      "start": {
+        "value": "2026-11-20T19:00:00",
+        "tz": "America/Chicago",
+        "all_day": false,
+        "flag": "assumed",
+        "blocking": false,
+        "caption": "7 PM assumed",
+        "score": 0.92
+      },
+      "end": {
+        "value": null,
+        "flag": "assumed",
+        "caption": "1 hour assumed"
+      },
+      "location": {
+        "value": null,
+        "flag": "missing",
+        "blocking": false
+      }
+    },
+    "alarms": [],
+    "related_to": null
+  }
+}

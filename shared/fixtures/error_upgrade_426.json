@@ -1,0 +1,14 @@
+{
+  "schema": "error",
+  "description": "426 below min_app_version.",
+  "input": {
+    "schema_version": 1,
+    "code": "upgrade_required",
+    "min_app_version": "0.4.0"
+  },
+  "expected": {
+    "schema_version": 1,
+    "code": "upgrade_required",
+    "min_app_version": "0.4.0"
+  }
+}

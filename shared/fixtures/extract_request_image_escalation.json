@@ -1,0 +1,74 @@
+{
+  "schema": "extract_request",
+  "description": "AI-ESCALATE call: img mode segment in the key, image attached (not chat, opt-in on).",
+  "input": {
+    "schema_version": 1,
+    "client_version": "0.3.1",
+    "idempotency_key": "hmacfixture:img:p7:1:0",
+    "mode": "extract",
+    "priority": "live",
+    "source": "catchup",
+    "captured_at": "2026-11-18T21:04:11Z",
+    "anchor_override": null,
+    "tz": "America/Chicago",
+    "locale": "en-US",
+    "ocr": {
+      "lines": [
+        {
+          "t": "Pizza Night! Fri 7pm",
+          "c": 0.93
+        },
+        {
+          "t": "RSVP by Thu",
+          "c": 0.88
+        }
+      ]
+    },
+    "is_chat": false,
+    "image_allowed": true,
+    "image_b64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+    "counters": [
+      {
+        "day": "2026-11-18",
+        "name": "card_state",
+        "dim": "ready",
+        "n": 3
+      }
+    ]
+  },
+  "expected": {
+    "schema_version": 1,
+    "client_version": "0.3.1",
+    "idempotency_key": "hmacfixture:img:p7:1:0",
+    "mode": "extract",
+    "priority": "live",
+    "source": "catchup",
+    "captured_at": "2026-11-18T21:04:11Z",
+    "anchor_override": null,
+    "tz": "America/Chicago",
+    "locale": "en-US",
+    "ocr": {
+      "lines": [
+        {
+          "t": "Pizza Night! Fri 7pm",
+          "c": 0.93
+        },
+        {
+          "t": "RSVP by Thu",
+          "c": 0.88
+        }
+      ]
+    },
+    "is_chat": false,
+    "image_allowed": true,
+    "image_b64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+    "counters": [
+      {
+        "day": "2026-11-18",
+        "name": "card_state",
+        "dim": "ready",
+        "n": 3
+      }
+    ]
+  }
+}

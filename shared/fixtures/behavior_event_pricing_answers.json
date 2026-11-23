@@ -1,0 +1,20 @@
+{
+  "schema": "behavior_event",
+  "description": "Pricing: wtp bucket and plan preference answers.",
+  "input": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2E",
+    "card_id": null,
+    "ts_utc": 1795467900000,
+    "event": "wtp_answered",
+    "wtp_bucket": "2_4",
+    "plan_pref": "annual"
+  },
+  "expected": {
+    "id": "01JF8K2M3N4P5Q6R7S8T9V0W2E",
+    "card_id": null,
+    "ts_utc": 1795467900000,
+    "event": "wtp_answered",
+    "wtp_bucket": "2_4",
+    "plan_pref": "annual"
+  }
+}

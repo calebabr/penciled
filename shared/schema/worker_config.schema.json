@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/worker_config.schema.json",
+  "title": "WorkerConfig",
+  "description": "Android only (DESIGN 3.3, D20): the EncryptedSharedPreferences file the app rewrites with a synchronous commit() on every settings change and every app start; read by COMP-ANDROID-WORKER. Excluded from backup and wiped first by delete-all. The worker treats it as missing or stale when the file is absent, format_version differs from the worker's, or app_version differs from the installed app version; then it makes NO network request and writes an inbox entry with status pending_app. Holds the bearer token: never log any value.",
+  "type": "object",
+  "properties": {
+    "format_version": {
+      "description": "Version of this file format. A worker built for another format_version treats the file as stale.",
+      "type": "integer",
+      "const": 1
+    },
+    "app_version": { "$ref": "common.schema.json#/$defs/VersionString" },
+    "written_at": {
+      "description": "Epoch milliseconds (UTC) of the last rewrite.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "token": {
+      "description": "Opaque bearer token (secret). Never logged, never in kv.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "server_url": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^https?://[^\\s]+$"
+    },
+    "install_salt": {
+      "description": "Per-install HMAC salt for idempotency keys (secret to the device).",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "install_watermark": {
+      "description": "Epoch milliseconds (UTC). Screenshots captured before it are never processed automatically.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "chat_local_only": { "type": "boolean" },
+    "image_autodetect_opt_in": { "type": "boolean" },
+    "autodetect_enabled": { "type": "boolean" }
+  },
+  "required": [
+    "format_version",
+    "app_version",
+    "written_at",
+    "token",
+    "server_url",
+    "install_salt",
+    "install_watermark",
+    "chat_local_only",
+    "image_autodetect_opt_in",
+    "autodetect_enabled"
+  ]
+}

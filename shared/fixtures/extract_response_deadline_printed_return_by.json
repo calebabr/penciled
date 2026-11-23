@@ -1,0 +1,140 @@
+{
+  "schema": "extract_response",
+  "description": "Receipt with a printed return-by date: an ordinary deadline, deadline_origin printed_return_by (D24).",
+  "input": {
+    "schema_version": 1,
+    "request_id": "req-01jf8k2m3n",
+    "class": "deadline",
+    "gate_state": "ready",
+    "card_score": 0.93,
+    "actions": [
+      {
+        "kind": "deadline",
+        "fields": {
+          "title": {
+            "value": "Return Blue Lamp",
+            "flag": "ok",
+            "blocking": false,
+            "score": 0.94,
+            "src_span": {
+              "line": 4,
+              "start": 0,
+              "end": 16
+            }
+          },
+          "due": {
+            "value": "2026-12-14",
+            "tz": "America/Chicago",
+            "all_day": true,
+            "flag": "ok",
+            "blocking": false,
+            "score": 0.93,
+            "src_span": {
+              "line": 4,
+              "start": 10,
+              "end": 16
+            }
+          }
+        },
+        "alarms": [
+          {
+            "preset": "day_before_1800",
+            "at": "2026-12-13T18:00:00"
+          },
+          {
+            "preset": "morning_of_0900",
+            "at": "2026-12-14T09:00:00"
+          }
+        ],
+        "related_to": null,
+        "deadline_origin": "printed_return_by"
+      }
+    ],
+    "notification": {
+      "kind": "ready",
+      "text": "Ready to add: Return Blue Lamp, Dec 14"
+    },
+    "anchor": {
+      "iso": "2026-11-18T21:04:11Z",
+      "source": "capture"
+    },
+    "escalate_hint": false,
+    "raw": null,
+    "min_app_version": "0.1.0",
+    "model": "haiku-5.5",
+    "prompt_version": "p7",
+    "thresholds_version": "v0",
+    "quota": {
+      "tier": "free",
+      "state": "near"
+    }
+  },
+  "expected": {
+    "schema_version": 1,
+    "request_id": "req-01jf8k2m3n",
+    "class": "deadline",
+    "gate_state": "ready",
+    "card_score": 0.93,
+    "actions": [
+      {
+        "kind": "deadline",
+        "fields": {
+          "title": {
+            "value": "Return Blue Lamp",
+            "flag": "ok",
+            "blocking": false,
+            "score": 0.94,
+            "src_span": {
+              "line": 4,
+              "start": 0,
+              "end": 16
+            }
+          },
+          "due": {
+            "value": "2026-12-14",
+            "tz": "America/Chicago",
+            "all_day": true,
+            "flag": "ok",
+            "blocking": false,
+            "score": 0.93,
+            "src_span": {
+              "line": 4,
+              "start": 10,
+              "end": 16
+            }
+          }
+        },
+        "alarms": [
+          {
+            "preset": "day_before_1800",
+            "at": "2026-12-13T18:00:00"
+          },
+          {
+            "preset": "morning_of_0900",
+            "at": "2026-12-14T09:00:00"
+          }
+        ],
+        "related_to": null,
+        "deadline_origin": "printed_return_by"
+      }
+    ],
+    "notification": {
+      "kind": "ready",
+      "text": "Ready to add: Return Blue Lamp, Dec 14"
+    },
+    "anchor": {
+      "iso": "2026-11-18T21:04:11Z",
+      "source": "capture"
+    },
+    "escalate_hint": false,
+    "raw": null,
+    "min_app_version": "0.1.0",
+    "model": "haiku-5.5",
+    "prompt_version": "p7",
+    "thresholds_version": "v0",
+    "quota": {
+      "tier": "free",
+      "state": "near"
+    }
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "schema": "rules",
+  "description": "Minimal valid rules.json format example.",
+  "input": {
+    "schema_version": 1,
+    "rules_version": "r0-placeholder",
+    "guard": {
+      "rules": [
+        {
+          "id": "cvv",
+          "reason": "cvv",
+          "pattern": "\\b(cvv|cvc)\\b",
+          "ignore_case": true
+        }
+      ]
+    },
+    "chat": {
+      "edge_fraction": 0.15,
+      "min_edge_boxes": 3,
+      "min_side_switches": 2,
+      "timestamp_pattern": "^\\d{1,2}:\\d{2}( ?[AP]M)?$",
+      "min_time_marker_lines": 2,
+      "day_header_words": [
+        "Today",
+        "Yesterday"
+      ],
+      "name_line_max_words": 3,
+      "min_name_lines": 2,
+      "name_prefix_pattern": "^[A-Z][a-z]+:",
+      "messaging_ui_words": [
+        "iMessage",
+        "Delivered"
+      ],
+      "chat_min_groups": 2,
+      "uncertain_min_groups": 1
+    },
+    "gate": {
+      "patterns": [
+        {
+          "id": "weekday",
+          "pattern": "\\b(mon|tue|wed|thu|fri|sat|sun)",
+          "ignore_case": true
+        }
+      ]
+    },
+    "redact": {
+      "rules": [
+        {
+          "id": "digits7",
+          "kind": "digits",
+          "pattern": "\\d{7,}",
+          "ignore_case": false
+        }
+      ]
+    },
+    "receipt_like": {
+      "keywords": [
+        "order",
+        "subtotal"
+      ]
+    },
+    "deadline_origin": {
+      "return_phrases": [
+        {
+          "id": "return_by",
+          "pattern": "return(s|able)? (by|until|through|before)",
+          "ignore_case": true
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema_version": 1,
+    "rules_version": "r0-placeholder",
+    "guard": {
+      "rules": [
+        {
+          "id": "cvv",
+          "reason": "cvv",
+          "pattern": "\\b(cvv|cvc)\\b",
+          "ignore_case": true
+        }
+      ]
+    },
+    "chat": {
+      "edge_fraction": 0.15,
+      "min_edge_boxes": 3,
+      "min_side_switches": 2,
+      "timestamp_pattern": "^\\d{1,2}:\\d{2}( ?[AP]M)?$",
+      "min_time_marker_lines": 2,
+      "day_header_words": [
+        "Today",
+        "Yesterday"
+      ],
+      "name_line_max_words": 3,
+      "min_name_lines": 2,
+      "name_prefix_pattern": "^[A-Z][a-z]+:",
+      "messaging_ui_words": [
+        "iMessage",
+        "Delivered"
+      ],
+      "chat_min_groups": 2,
+      "uncertain_min_groups": 1
+    },
+    "gate": {
+      "patterns": [
+        {
+          "id": "weekday",
+          "pattern": "\\b(mon|tue|wed|thu|fri|sat|sun)",
+          "ignore_case": true
+        }
+      ]
+    },
+    "redact": {
+      "rules": [
+        {
+          "id": "digits7",
+          "kind": "digits",
+          "pattern": "\\d{7,}",
+          "ignore_case": false
+        }
+      ]
+    },
+    "receipt_like": {
+      "keywords": [
+        "order",
+        "subtotal"
+      ]
+    },
+    "deadline_origin": {
+      "return_phrases": [
+        {
+          "id": "return_by",
+          "pattern": "return(s|able)? (by|until|through|before)",
+          "ignore_case": true
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/proposed_action.schema.json",
+  "title": "ProposedAction",
+  "description": "Device-facing proposed action (DESIGN 5.4): what the app receives and stores. Exactly two kinds, event and deadline. Every value was re-derived by code (grounding, resolver, validation); the model never executes anything.",
+  "oneOf": [
+    { "$ref": "#/$defs/EventAction" },
+    { "$ref": "#/$defs/DeadlineAction" }
+  ],
+  "discriminator": { "propertyName": "kind" },
+  "$defs": {
+    "SrcSpan": {
+      "description": "Where the value was found in the OCR lines (line index and character offsets).",
+      "type": "object",
+      "properties": {
+        "line": { "type": "integer", "minimum": 0 },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["line", "start", "end"]
+    },
+    "TextField": {
+      "description": "A text field (title, location). Content; never log.",
+      "type": "object",
+      "properties": {
+        "value": { "type": ["string", "null"], "maxLength": 500 },
+        "flag": { "$ref": "common.schema.json#/$defs/Flag" },
+        "blocking": { "type": "boolean" },
+        "score": { "$ref": "common.schema.json#/$defs/Probability" },
+        "caption": { "type": "string", "maxLength": 140 },
+        "question": { "type": "string", "maxLength": 140 },
+        "src_span": { "$ref": "#/$defs/SrcSpan" }
+      },
+      "required": ["value", "flag"]
+    },
+    "WhenField": {
+      "description": "A resolved date/time field (start, end, due). value is wall-clock local time; tz names the zone. Date maths happens only in the server resolver.",
+      "type": "object",
+      "properties": {
+        "value": {
+          "anyOf": [
+            { "$ref": "common.schema.json#/$defs/LocalDateOrDateTime" },
+            { "type": "null" }
+          ]
+        },
+        "tz": { "$ref": "common.schema.json#/$defs/TimeZoneId" },
+        "all_day": { "type": "boolean" },
+        "flag": { "$ref": "common.schema.json#/$defs/Flag" },
+        "blocking": { "type": "boolean" },
+        "score": { "$ref": "common.schema.json#/$defs/Probability" },
+        "caption": { "type": "string", "maxLength": 140 },
+        "question": { "type": "string", "maxLength": 140 },
+        "src_span": { "$ref": "#/$defs/SrcSpan" }
+      },
+      "required": ["value", "flag"]
+    },
+    "AlarmPreset": {
+      "description": "ACT-ALARMS presets: R1 18:00 the day before, R2 09:00 morning of (or due minus 3 h), R3 custom. Presets apply to deadlines only (D20).",
+      "type": "string",
+      "enum": ["day_before_1800", "morning_of_0900", "due_minus_3h", "custom"]
+    },
+    "Alarm": {
+      "type": "object",
+      "properties": {
+        "preset": { "$ref": "#/$defs/AlarmPreset" },
+        "at": { "$ref": "common.schema.json#/$defs/LocalDateOrDateTime" }
+      },
+      "required": ["preset", "at"]
+    },
+    "EventFields": {
+      "type": "object",
+      "properties": {
+        "title": { "$ref": "#/$defs/TextField" },
+        "start": { "$ref": "#/$defs/WhenField" },
+        "end": { "$ref": "#/$defs/WhenField" },
+        "location": { "$ref": "#/$defs/TextField" }
+      },
+      "required": ["title", "start"]
+    },
+    "DeadlineFields": {
+      "type": "object",
+      "properties": {
+        "title": { "$ref": "#/$defs/TextField" },
+        "due": { "$ref": "#/$defs/WhenField" }
+      },
+      "required": ["title", "due"]
+    },
+    "EventAction": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "const": "event" },
+        "fields": { "$ref": "#/$defs/EventFields" },
+        "alarms": { "type": "array", "items": { "$ref": "#/$defs/Alarm" }, "maxItems": 3 },
+        "related_to": { "type": ["integer", "null"], "minimum": 0, "maximum": 2 }
+      },
+      "required": ["kind", "fields", "alarms", "related_to"]
+    },
+    "DeadlineAction": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "const": "deadline" },
+        "fields": { "$ref": "#/$defs/DeadlineFields" },
+        "alarms": { "type": "array", "items": { "$ref": "#/$defs/Alarm" }, "maxItems": 3 },
+        "related_to": {
+          "description": "Index of the event this deadline belongs to (an RSVP next to an event), or null.",
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 2
+        },
+        "deadline_origin": { "$ref": "common.schema.json#/$defs/DeadlineOrigin" }
+      },
+      "required": ["kind", "fields", "alarms", "related_to", "deadline_origin"]
+    }
+  }
+}

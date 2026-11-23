@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/error.schema.json",
+  "title": "ErrorResponse",
+  "description": "Body of every non-200 /v1 response with a body (DESIGN 3.7), including 202 in-flight duplicates (code in_flight + retry_after). Content-free by construction: codes are enums, validation issues carry paths and error types only, never the input (D20.7). 204 (DELETE /v1/me) has no body.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "code": { "$ref": "#/$defs/ErrorCode" },
+    "retry_after": {
+      "description": "Seconds to wait before retrying (202 in_flight, 429 rate_limited; mirrors the Retry-After header).",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 86400
+    },
+    "basic": {
+      "description": "503 service_paused: true tells the client to show the basic card / ST-PAUSED (cap or kill switch).",
+      "type": "boolean"
+    },
+    "min_app_version": {
+      "description": "426 upgrade_required: the lowest supported app version (ST-UPGRADE).",
+      "$ref": "common.schema.json#/$defs/VersionString"
+    },
+    "issues": {
+      "description": "422 invalid_request: content-free validation issues.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/ValidationIssue" },
+      "maxItems": 50
+    }
+  },
+  "required": ["schema_version", "code"],
+  "$defs": {
+    "ErrorCode": {
+      "description": "HTTP status mapping: in_flight 202, unauthorized 401, invalid_invite 403 (/v1/register), payload_too_large 413, invalid_request 422, upgrade_required 426, rate_limited 429, internal 500, service_paused 503.",
+      "type": "string",
+      "enum": [
+        "in_flight",
+        "unauthorized",
+        "invalid_invite",
+        "payload_too_large",
+        "invalid_request",
+        "upgrade_required",
+        "rate_limited",
+        "internal",
+        "service_paused"
+      ]
+    },
+    "ValidationIssue": {
+      "description": "One validation failure: the path into the body and the error type. Never the offending input value.",
+      "type": "object",
+      "properties": {
+        "loc": {
+          "type": "array",
+          "items": { "anyOf": [{ "$ref": "#/$defs/LocPart" }, { "type": "integer", "minimum": 0 }] },
+          "maxItems": 16
+        },
+        "type": { "$ref": "common.schema.json#/$defs/Token" }
+      },
+      "required": ["loc", "type"]
+    },
+    "LocPart": {
+      "description": "A field-name path segment (schema field names only, so no content).",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+    }
+  }
+}

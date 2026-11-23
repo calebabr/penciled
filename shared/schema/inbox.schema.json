@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/inbox.schema.json",
+  "title": "InboxEntry",
+  "description": "Android worker -> app: one file inbox/<key>.json per screenshot (DESIGN 3.8, COMP-INBOX). The app ingests these on open or notification tap. pending_app = worker_config missing or stale (no network was made), or the worker handed the item to the app (attempts records automatic calls already spent). local_only = sensitive, or chat/chat-uncertain with chat_local_only on: no network, no notification. none = AI-GATE said nothing: silent. extracted = the server response. Local file excluded from backup and wiped by delete-all.",
+  "oneOf": [
+    { "$ref": "#/$defs/InboxPendingApp" },
+    { "$ref": "#/$defs/InboxLocalOnly" },
+    { "$ref": "#/$defs/InboxNone" },
+    { "$ref": "#/$defs/InboxExtracted" }
+  ],
+  "discriminator": { "propertyName": "status" },
+  "$defs": {
+    "InboxKey": {
+      "description": "File key: the content fingerprint key the worker also keeps in its seen file.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "Sha256Hex": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "AssetRef": {
+      "description": "MediaStore content URI of the screenshot.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "RedactionMap": {
+      "description": "Placeholder -> original value (AI-REDACT). Device only; content; never log.",
+      "type": "object",
+      "additionalProperties": { "type": "string", "maxLength": 512 }
+    },
+    "InboxPendingApp": {
+      "type": "object",
+      "properties": {
+        "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+        "status": { "type": "string", "const": "pending_app" },
+        "key": { "$ref": "#/$defs/InboxKey" },
+        "written_at": { "type": "integer", "minimum": 0 },
+        "asset_ref": { "$ref": "#/$defs/AssetRef" },
+        "sha256": { "$ref": "#/$defs/Sha256Hex" },
+        "captured_at": { "$ref": "common.schema.json#/$defs/IsoDateTime" },
+        "attempts": {
+          "description": "Automatic provider calls already spent on this item (counts toward the 3-call cap).",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        }
+      },
+      "required": ["schema_version", "status", "key", "written_at", "asset_ref", "sha256", "captured_at"]
+    },
+    "InboxLocalOnly": {
+      "type": "object",
+      "properties": {
+        "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+        "status": { "type": "string", "const": "local_only" },
+        "key": { "$ref": "#/$defs/InboxKey" },
+        "written_at": { "type": "integer", "minimum": 0 },
+        "asset_ref": { "$ref": "#/$defs/AssetRef" },
+        "sha256": { "$ref": "#/$defs/Sha256Hex" },
+        "captured_at": { "$ref": "common.schema.json#/$defs/IsoDateTime" },
+        "guard": { "$ref": "guard_result.schema.json" },
+        "ocr": { "$ref": "common.schema.json#/$defs/OcrBlock" }
+      },
+      "required": ["schema_version", "status", "key", "written_at", "asset_ref", "sha256", "captured_at", "guard"]
+    },
+    "InboxNone": {
+      "type": "object",
+      "properties": {
+        "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+        "status": { "type": "string", "const": "none" },
+        "key": { "$ref": "#/$defs/InboxKey" },
+        "written_at": { "type": "integer", "minimum": 0 },
+        "asset_ref": { "$ref": "#/$defs/AssetRef" },
+        "sha256": { "$ref": "#/$defs/Sha256Hex" },
+        "captured_at": { "$ref": "common.schema.json#/$defs/IsoDateTime" },
+        "guard": { "$ref": "guard_result.schema.json" },
+        "ocr": { "$ref": "common.schema.json#/$defs/OcrBlock" }
+      },
+      "required": ["schema_version", "status", "key", "written_at", "asset_ref", "sha256", "captured_at", "guard"]
+    },
+    "InboxExtracted": {
+      "type": "object",
+      "properties": {
+        "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+        "status": { "type": "string", "const": "extracted" },
+        "key": { "$ref": "#/$defs/InboxKey" },
+        "written_at": { "type": "integer", "minimum": 0 },
+        "asset_ref": { "$ref": "#/$defs/AssetRef" },
+        "sha256": { "$ref": "#/$defs/Sha256Hex" },
+        "captured_at": { "$ref": "common.schema.json#/$defs/IsoDateTime" },
+        "guard": { "$ref": "guard_result.schema.json" },
+        "ocr": { "$ref": "common.schema.json#/$defs/OcrBlock" },
+        "redaction_map": { "$ref": "#/$defs/RedactionMap" },
+        "idempotency_key": {
+          "description": "The key used for the call, so a later app-side retry or Try again reuses or bumps it.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "notified": { "description": "Whether the worker posted a notification.", "type": "boolean" },
+        "response": { "$ref": "extract_response.schema.json" }
+      },
+      "required": [
+        "schema_version",
+        "status",
+        "key",
+        "written_at",
+        "asset_ref",
+        "sha256",
+        "captured_at",
+        "guard",
+        "idempotency_key",
+        "notified",
+        "response"
+      ]
+    }
+  }
+}

@@ -29,7 +29,17 @@ jobs:
         with:
           node-version: "24.x"
           cache: npm
+      # The shared contracts round trip (npm test) shells out to the pydantic models.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: shared/python/pyproject.toml
+      - name: Install shared contracts (python)
+        run: python -m pip install -e ./shared/python
       - run: npm ci
+      - name: Generated contracts match shared/schema (drift check)
+        run: npm run check:generated -w @penciled/shared
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
@@ -43,18 +53,30 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: server/pyproject.toml
-      - name: Install server with dev deps
-        run: python -m pip install -e "./server[dev]"
+          cache-dependency-path: |
+            server/pyproject.toml
+            shared/python/pyproject.toml
+      # The shared contracts round trip (pytest) shells out to the zod schemas.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: npm
+      - run: npm ci
+      - name: Install server and shared contracts with dev deps
+        run: python -m pip install -e "./server[dev]" -e "./shared/python[dev]"
       - name: ruff
         run: |
           ruff check server
           ruff check tools/ci
+          ruff check shared/python
+      - name: mypy (shared contracts)
+        working-directory: shared/python
+        run: mypy
       - name: mypy
         working-directory: server
         run: mypy app
       - name: pytest
-        run: python -m pytest server/tests tools/ci/tests
+        run: python -m pytest server/tests tools/ci/tests shared
 
   secret-scan:
     name: secret scan (gitleaks)

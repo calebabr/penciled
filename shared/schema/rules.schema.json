@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.penciled.invalid/v1/rules.schema.json",
+  "title": "RulesFile",
+  "description": "Format of shared/rules/rules.json: the single rule set implemented in TS and Kotlin (COMP-RULES: AI-SENSITIVE guard, AI-CHAT heuristic, AI-GATE prefilter, AI-REDACT) plus the purchases receipt_like keywords and deadline_origin return phrases (D24). Regex patterns must stay inside the common subset of ECMAScript and java.util.regex (no lookbehind, no named groups, no inline flags; use ignore_case instead).",
+  "type": "object",
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "rules_version": { "$ref": "common.schema.json#/$defs/Token" },
+    "guard": { "$ref": "#/$defs/GuardRules" },
+    "chat": { "$ref": "#/$defs/ChatRules" },
+    "gate": { "$ref": "#/$defs/GateRules" },
+    "redact": { "$ref": "#/$defs/RedactRules" },
+    "receipt_like": { "$ref": "#/$defs/ReceiptLikeRules" },
+    "deadline_origin": { "$ref": "#/$defs/DeadlineOriginRules" }
+  },
+  "required": ["schema_version", "rules_version", "guard", "chat", "gate", "redact", "receipt_like", "deadline_origin"],
+  "$defs": {
+    "RulePattern": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/Token" },
+        "pattern": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "ignore_case": { "type": "boolean" }
+      },
+      "required": ["id", "pattern", "ignore_case"]
+    },
+    "GuardRule": {
+      "description": "A hit on any line makes the item sensitive (fail closed). Rules are evaluated in order; the first hit sets guard_reason.",
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/Token" },
+        "reason": { "$ref": "common.schema.json#/$defs/GuardReason" },
+        "pattern": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "ignore_case": { "type": "boolean" }
+      },
+      "required": ["id", "reason", "pattern", "ignore_case"]
+    },
+    "GuardRules": {
+      "type": "object",
+      "properties": {
+        "rules": { "type": "array", "items": { "$ref": "#/$defs/GuardRule" }, "minItems": 1, "maxItems": 500 }
+      },
+      "required": ["rules"]
+    },
+    "ChatRules": {
+      "description": "AI-CHAT heuristic parameters (DESIGN 5.1). >= chat_min_groups signal groups = chat; >= uncertain_min_groups = chat_uncertain (treated as chat); else not_chat.",
+      "type": "object",
+      "properties": {
+        "edge_fraction": { "description": "Left box starts in the left N of width / right box ends in the right N.", "type": "number", "exclusiveMinimum": 0, "maximum": 0.5 },
+        "min_edge_boxes": { "type": "integer", "minimum": 1 },
+        "min_side_switches": { "type": "integer", "minimum": 1 },
+        "timestamp_pattern": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "min_time_marker_lines": { "type": "integer", "minimum": 1 },
+        "day_header_words": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 64 }, "maxItems": 200 },
+        "name_line_max_words": { "type": "integer", "minimum": 1 },
+        "min_name_lines": { "type": "integer", "minimum": 1 },
+        "name_prefix_pattern": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "messaging_ui_words": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 64 }, "maxItems": 200 },
+        "chat_min_groups": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "uncertain_min_groups": { "type": "integer", "minimum": 1, "maximum": 3 }
+      },
+      "required": [
+        "edge_fraction",
+        "min_edge_boxes",
+        "min_side_switches",
+        "timestamp_pattern",
+        "min_time_marker_lines",
+        "day_header_words",
+        "name_line_max_words",
+        "min_name_lines",
+        "name_prefix_pattern",
+        "messaging_ui_words",
+        "chat_min_groups",
+        "uncertain_min_groups"
+      ]
+    },
+    "GateRules": {
+      "description": "AI-GATE high-recall prefilter: any pattern hit on any line = could be actionable.",
+      "type": "object",
+      "properties": {
+        "patterns": { "type": "array", "items": { "$ref": "#/$defs/RulePattern" }, "minItems": 1, "maxItems": 500 }
+      },
+      "required": ["patterns"]
+    },
+    "RedactKind": {
+      "description": "Placeholder type written in place of the match (AI-REDACT).",
+      "type": "string",
+      "enum": ["email", "phone", "digits", "otp"]
+    },
+    "RedactRule": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/Token" },
+        "kind": { "$ref": "#/$defs/RedactKind" },
+        "pattern": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "ignore_case": { "type": "boolean" }
+      },
+      "required": ["id", "kind", "pattern", "ignore_case"]
+    },
+    "RedactRules": {
+      "type": "object",
+      "properties": {
+        "rules": { "type": "array", "items": { "$ref": "#/$defs/RedactRule" }, "minItems": 1, "maxItems": 100 }
+      },
+      "required": ["rules"]
+    },
+    "ReceiptLikeRules": {
+      "description": "Purchases (D24): case-insensitive keyword list; any hit sets GuardResult.receipt_like.",
+      "type": "object",
+      "properties": {
+        "keywords": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 64 }, "maxItems": 200 }
+      },
+      "required": ["keywords"]
+    },
+    "DeadlineOriginRules": {
+      "description": "Purchases (D24): a match on the grounded due evidence line (or the line above) sets deadline_origin = printed_return_by; else other.",
+      "type": "object",
+      "properties": {
+        "return_phrases": { "type": "array", "items": { "$ref": "#/$defs/RulePattern" }, "maxItems": 100 }
+      },
+      "required": ["return_phrases"]
+    }
+  }
+}

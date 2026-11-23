@@ -1,0 +1,7 @@
+{
+  "schema": "token_claims",
+  "description": "tier is a closed enum.",
+  "input": {
+    "tier": "beta"
+  }
+}

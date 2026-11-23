@@ -1,0 +1,74 @@
+{
+  "schema": "extract_request",
+  "description": "Live text extract from auto-detect.",
+  "input": {
+    "schema_version": 1,
+    "client_version": "0.3.1",
+    "idempotency_key": "hmacfixture:text:p7:1:0",
+    "mode": "extract",
+    "priority": "live",
+    "source": "auto",
+    "captured_at": "2026-11-18T21:04:11Z",
+    "anchor_override": null,
+    "tz": "America/Chicago",
+    "locale": "en-US",
+    "ocr": {
+      "lines": [
+        {
+          "t": "Pizza Night! Fri 7pm",
+          "c": 0.93
+        },
+        {
+          "t": "RSVP by Thu",
+          "c": 0.88
+        }
+      ]
+    },
+    "is_chat": false,
+    "image_allowed": true,
+    "image_b64": null,
+    "counters": [
+      {
+        "day": "2026-11-18",
+        "name": "card_state",
+        "dim": "ready",
+        "n": 3
+      }
+    ]
+  },
+  "expected": {
+    "schema_version": 1,
+    "client_version": "0.3.1",
+    "idempotency_key": "hmacfixture:text:p7:1:0",
+    "mode": "extract",
+    "priority": "live",
+    "source": "auto",
+    "captured_at": "2026-11-18T21:04:11Z",
+    "anchor_override": null,
+    "tz": "America/Chicago",
+    "locale": "en-US",
+    "ocr": {
+      "lines": [
+        {
+          "t": "Pizza Night! Fri 7pm",
+          "c": 0.93
+        },
+        {
+          "t": "RSVP by Thu",
+          "c": 0.88
+        }
+      ]
+    },
+    "is_chat": false,
+    "image_allowed": true,
+    "image_b64": null,
+    "counters": [
+      {
+        "day": "2026-11-18",
+        "name": "card_state",
+        "dim": "ready",
+        "n": 3
+      }
+    ]
+  }
+}

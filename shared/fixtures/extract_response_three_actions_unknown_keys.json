@@ -1,0 +1,252 @@
+{
+  "schema": "extract_response",
+  "description": "Maximum of 3 actions; unknown keys inside an action field and at top level are dropped.",
+  "input": {
+    "schema_version": 1,
+    "request_id": "req-01jf8k2m3n",
+    "class": "event",
+    "gate_state": "needs_look",
+    "card_score": 0.42,
+    "actions": [
+      {
+        "kind": "event",
+        "fields": {
+          "title": {
+            "value": "Pizza night",
+            "flag": "ok",
+            "blocking": false,
+            "score": 0.95,
+            "src_span": {
+              "line": 0,
+              "start": 0,
+              "end": 11
+            }
+          },
+          "start": {
+            "value": "2026-11-20T19:00:00",
+            "tz": "America/Chicago",
+            "all_day": false,
+            "flag": "assumed",
+            "blocking": false,
+            "caption": "7 PM assumed",
+            "score": 0.92
+          },
+          "end": {
+            "value": null,
+            "flag": "assumed",
+            "caption": "1 hour assumed"
+          },
+          "location": {
+            "value": null,
+            "flag": "missing",
+            "blocking": false
+          }
+        },
+        "alarms": [],
+        "related_to": null
+      },
+      {
+        "kind": "event",
+        "fields": {
+          "title": {
+            "value": "Pizza night",
+            "flag": "ok",
+            "blocking": false,
+            "score": 0.95,
+            "src_span": {
+              "line": 0,
+              "start": 0,
+              "end": 11
+            },
+            "model_note": "dropped"
+          },
+          "start": {
+            "value": "2026-11-20T19:00:00",
+            "tz": "America/Chicago",
+            "all_day": false,
+            "flag": "assumed",
+            "blocking": false,
+            "caption": "7 PM assumed",
+            "score": 0.92
+          },
+          "end": {
+            "value": null,
+            "flag": "assumed",
+            "caption": "1 hour assumed"
+          },
+          "location": {
+            "value": null,
+            "flag": "missing",
+            "blocking": false
+          }
+        },
+        "alarms": [],
+        "related_to": null
+      },
+      {
+        "kind": "deadline",
+        "fields": {
+          "title": {
+            "value": "RSVP for Pizza night",
+            "flag": "ok",
+            "score": 0.93
+          },
+          "due": {
+            "value": "2026-11-19",
+            "all_day": true,
+            "flag": "ok",
+            "score": 0.91
+          }
+        },
+        "alarms": [
+          {
+            "preset": "day_before_1800",
+            "at": "2026-11-18T18:00:00"
+          },
+          {
+            "preset": "morning_of_0900",
+            "at": "2026-11-19T09:00:00"
+          }
+        ],
+        "related_to": 0,
+        "deadline_origin": "other"
+      }
+    ],
+    "notification": null,
+    "anchor": {
+      "iso": "2026-11-18T21:04:11Z",
+      "source": "capture"
+    },
+    "escalate_hint": true,
+    "raw": null,
+    "min_app_version": "0.1.0",
+    "model": "haiku-5.5",
+    "prompt_version": "p7",
+    "thresholds_version": "v0",
+    "debug_trace": [
+      "dropped"
+    ]
+  },
+  "expected": {
+    "schema_version": 1,
+    "request_id": "req-01jf8k2m3n",
+    "class": "event",
+    "gate_state": "needs_look",
+    "card_score": 0.42,
+    "actions": [
+      {
+        "kind": "event",
+        "fields": {
+          "title": {
+            "value": "Pizza night",
+            "flag": "ok",
+            "blocking": false,
+            "score": 0.95,
+            "src_span": {
+              "line": 0,
+              "start": 0,
+              "end": 11
+            }
+          },
+          "start": {
+            "value": "2026-11-20T19:00:00",
+            "tz": "America/Chicago",
+            "all_day": false,
+            "flag": "assumed",
+            "blocking": false,
+            "caption": "7 PM assumed",
+            "score": 0.92
+          },
+          "end": {
+            "value": null,
+            "flag": "assumed",
+            "caption": "1 hour assumed"
+          },
+          "location": {
+            "value": null,
+            "flag": "missing",
+            "blocking": false
+          }
+        },
+        "alarms": [],
+        "related_to": null
+      },
+      {
+        "kind": "event",
+        "fields": {
+          "title": {
+            "value": "Pizza night",
+            "flag": "ok",
+            "blocking": false,
+            "score": 0.95,
+            "src_span": {
+              "line": 0,
+              "start": 0,
+              "end": 11
+            }
+          },
+          "start": {
+            "value": "2026-11-20T19:00:00",
+            "tz": "America/Chicago",
+            "all_day": false,
+            "flag": "assumed",
+            "blocking": false,
+            "caption": "7 PM assumed",
+            "score": 0.92
+          },
+          "end": {
+            "value": null,
+            "flag": "assumed",
+            "caption": "1 hour assumed"
+          },
+          "location": {
+            "value": null,
+            "flag": "missing",
+            "blocking": false
+          }
+        },
+        "alarms": [],
+        "related_to": null
+      },
+      {
+        "kind": "deadline",
+        "fields": {
+          "title": {
+            "value": "RSVP for Pizza night",
+            "flag": "ok",
+            "score": 0.93
+          },
+          "due": {
+            "value": "2026-11-19",
+            "all_day": true,
+            "flag": "ok",
+            "score": 0.91
+          }
+        },
+        "alarms": [
+          {
+            "preset": "day_before_1800",
+            "at": "2026-11-18T18:00:00"
+          },
+          {
+            "preset": "morning_of_0900",
+            "at": "2026-11-19T09:00:00"
+          }
+        ],
+        "related_to": 0,
+        "deadline_origin": "other"
+      }
+    ],
+    "notification": null,
+    "anchor": {
+      "iso": "2026-11-18T21:04:11Z",
+      "source": "capture"
+    },
+    "escalate_hint": true,
+    "raw": null,
+    "min_app_version": "0.1.0",
+    "model": "haiku-5.5",
+    "prompt_version": "p7",
+    "thresholds_version": "v0"
+  }
+}

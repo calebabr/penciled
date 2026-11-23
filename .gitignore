@@ -33,3 +33,7 @@ eval/images/own/
 Thumbs.db
 .idea/
 .vscode/
+
+# planning docs and sprint status stay local, never pushed
+/docs/
+/STATUS.md

@@ -1,0 +1,23 @@
+# BuildKit reads <Dockerfile>.dockerignore next to the Dockerfile; the build context
+# is the repo root. The Dockerfile COPYs only shared/python and server/{app,...},
+# but the context itself must never carry secrets or bulky trees to a remote builder.
+**/.env
+**/.env.*
+**/*.keystore
+**/*.jks
+**/*.p8
+**/*.p12
+**/service-account*.json
+**/node_modules
+**/.venv
+**/venv
+**/__pycache__
+**/.mypy_cache
+**/.ruff_cache
+**/.pytest_cache
+**/*.egg-info
+.git
+apps
+docs
+eval
+.claude

@@ -47,6 +47,24 @@ jobs:
   python:
     name: python (ruff, mypy, pytest)
     runs-on: ubuntu-latest
+    # Server tests run against real Postgres (SPR-04). Throwaway CI database: trust auth,
+    # no password, nothing secret.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: penciled_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://postgres@localhost:5432/penciled_test
+      PENCILED_REQUIRE_POSTGRES: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -75,8 +93,36 @@ jobs:
       - name: mypy
         working-directory: server
         run: mypy app
+      - name: alembic migrations apply to Postgres (CLI path used by the deploy)
+        working-directory: server
+        env:
+          DATABASE_URL: postgresql+psycopg://postgres@localhost:5432/penciled_test
+        run: |
+          alembic upgrade head
+          alembic check
+          alembic downgrade base
       - name: pytest
         run: python -m pytest server/tests tools/ci/tests shared
+
+  server-image:
+    name: server image (docker build, non-root, health)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: docker build -f server/Dockerfile -t penciled-api:ci .
+      - name: Runs as non-root
+        run: test "$(docker run --rm penciled-api:ci id -u)" != "0"
+      - name: Health responds without a database
+        run: |
+          set -euo pipefail
+          docker run -d --name api -p 8080:8080 penciled-api:ci
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8080/v1/health; then exit 0; fi
+            sleep 1
+          done
+          docker logs api
+          exit 1
 
   secret-scan:
     name: secret scan (gitleaks)

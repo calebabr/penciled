@@ -11,6 +11,11 @@ dependencies = [
     "fastapi>=0.115,<1",
     "pydantic>=2.7,<3",
     "uvicorn[standard]>=0.30,<1",
+    "sqlalchemy>=2.0.30,<3",
+    "alembic>=1.16,<2",
+    "psycopg[binary]>=3.2,<4",
+    # Shared contracts v1 (shared/python); installed from the repo path, see STATUS.md.
+    "penciled-contracts>=1.0,<2",
 ]
 
 [project.optional-dependencies]
@@ -23,6 +28,9 @@ dev = [
 
 [tool.setuptools.packages.find]
 include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["config/*.json", "db/migrations/*.mako"]
 
 [tool.ruff]
 line-length = 100
@@ -38,6 +46,8 @@ select = ["E", "F", "I", "B", "UP", "T20"]
 python_version = "3.11"
 strict = true
 packages = ["app"]
+# The shared contracts are an editable install (import hook mypy cannot follow).
+mypy_path = "../shared/python"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "near_fraction": 0.8,
+  "tiers": {
+    "free": { "daily_limit": 100, "shadow_threshold": 30 },
+    "pro": { "daily_limit": 100, "shadow_threshold": null }
+  }
+}

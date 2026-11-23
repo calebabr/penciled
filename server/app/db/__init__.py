@@ -1,1 +1,1 @@
-"""db package (filled in by later sprints)."""
+"""COMP-SERVERDB: schema (schema.py), engine helpers, Alembic migrations."""

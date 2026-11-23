@@ -1,4 +1,4 @@
-# Session start prompt: SPR-01 (paste into a fresh Claude Code session in C:\dev\screenshot-actions)
+# Session start prompt: SPR-01 (paste into a fresh Claude Code session in C:\dev\penciled)
 
 ```
 You are continuing the Penciled beta build. Session 1 of sprint SPR-01: Monorepo and

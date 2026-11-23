@@ -1,0 +1,22 @@
+{
+  "name": "penciled",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/mobile",
+    "shared"
+  ],
+  "engines": {
+    "node": "^22.18.0 || ^24.3.0"
+  },
+  "scripts": {
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "overrides": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-test-renderer": "19.3.0"
+  }
+}

@@ -3,6 +3,7 @@ import { ShareIntentProvider } from 'expo-share-intent';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { ShareSpikeRouter } from '../src/features/sharespike/ShareSpikeRouter';
 import { useColors } from '../src/theme';
 
 export default function RootLayout() {
@@ -17,6 +18,8 @@ export default function RootLayout() {
             headerTintColor: colors.graphite,
           }}
         />
+        {/* SP-3: dev / spike builds route incoming shares to /share-spike; no-op in store builds. */}
+        <ShareSpikeRouter />
         <StatusBar style="auto" />
       </GestureHandlerRootView>
     </ShareIntentProvider>

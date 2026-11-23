@@ -1,0 +1,16 @@
+# gitleaks config for Penciled (hard rule 4: never commit secrets).
+# Extends the upstream default rule set; nothing in docs/ needs allowlisting today.
+# Pinned scanner version: see GITLEAKS_VERSION in .github/workflows/ci.yml.
+title = "Penciled gitleaks config"
+
+[extend]
+useDefault = true
+
+# Third-party dependency trees are git-ignored and never committed; skip them so a
+# local `gitleaks dir .` run only reports files we own.
+[[allowlists]]
+description = "Vendored dependencies (git-ignored)"
+paths = [
+  '''(^|/)node_modules/''',
+  '''(^|/)\.venv/''',
+]

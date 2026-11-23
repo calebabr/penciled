@@ -37,3 +37,11 @@ Thumbs.db
 # planning docs and sprint status stay local, never pushed
 /docs/
 /STATUS.md
+
+# agent instructions and definitions stay local
+/CLAUDE.md
+/CLAUDE.local.md
+/AGENTS.md
+.claude/
+.impeccable/
+.agents/

@@ -26,6 +26,8 @@ Status: plan only, written 2026-11-20. Nothing is built. Source of truth: `BUILD
 | W8 | Jan 7 – 13 (+ Jan 14) | 7 + 1 | 5 + 1 |
 | **Total to RC** | | **≈50** | **≈37** |
 
+(added: purchases extension; added: pricing pass) **Capacity note:** at most ~0.75 session is absorbed in total (~0.5 purchases + ~0.25 pricing) across SPR-02, 04, 08, 21 and 25, inside existing slack. No sprint is added, delayed, reordered or resized; the whole-number session counts above and in §2 do not change.
+
 **What the numbers mean:**
 - **Baseline (~6–7 a week; the plan assumes 7 in full weeks):** about 50 sessions are available, about 49 after the W6 reserve. Demand is 53.5 (53 + RC). The handoff's 20% buffer does not exist. **The cut list is the buffer.** The plan of record takes cuts 0, 3, 4, 9 and 10 at trigger T1 (Dec 3) and cuts 1 and 5–8 at T2 (CP2). Cut 11 is held as the first contingency. That lands RC on Jan 13–14 with roughly zero slack.
   - At a steady **6 a week**, even all 12 cuts leave the plan about 3–4 sessions short. That becomes a Chair decision (§5).
@@ -62,7 +64,11 @@ Status: plan only, written 2026-11-20. Nothing is built. Source of truth: `BUILD
 - **Week:** W1 · **Sessions:** 1 · **Lane:** shared · **Deps:** 01 · **∥:** 03
 - **Components:** COMP-CONTRACTS
 - **Goal:** schemas: extract request/response, ProposedAction, errors, `rules.json` + fixture format, `thresholds_vN.json`, inbox JSON (`pending_app`), `worker_config`, `behavior_event` enums. Generate zod and pydantic types.
+  - (added: purchases extension) Also the `nothing_subtype` (`receipt_order | shipping | booking | meme | other`), `guard_reason` counts + `receipt_like`, and `deadline_origin` (`printed_return_by | other`) enums, with matching `behavior_event` enum values.
+  - (added: pricing pass) Also `tier` (token claim, default `free`), the optional `quota{tier,state}` response object, and the pricing enums (`pro_door_event`/`pro_feature`, `wtp_bucket`, `plan_pref`, `shadow_cap_hit`, `import_cap_hit`, `usage_day_bucket`, `search_zero_result`, `cap_tier`).
 - **Exit:** pydantic ↔ zod round-trip on 20 fixtures, including `worker_config`. Unknown keys are dropped. `schema_version` is present in both directions. Tag `contracts-v1`.
+  - (added: purchases extension) The 20 round-trip fixtures include one nothing-to-do per subtype and one deadline per origin. **Must land before the CP0 freeze Nov 25.**
+  - (added: pricing pass) The 20 round-trip fixtures include one response with `quota` and one without; an unknown client-sent `tier` is dropped. Must land before the CP0 freeze Nov 25; tag stays `contracts-v1`.
 - **Read first:** DESIGN §3.3 and §5 for the field lists (only if the handoff is unclear).
 - **Leave:** `shared/CHANGELOG.md` with the rule "additive only, version bump required".
 - **Risk / fallback:** churn breaks lanes → after CP0, `shared/` is read-only except in a dedicated bump session.
@@ -85,8 +91,10 @@ Status: plan only, written 2026-11-20. Nothing is built. Source of truth: `BUILD
 - **Week:** W1 · **Sessions:** 2 · **Lane:** A · **Deps:** 02 · **∥:** 03
 - **Components:** COMP-SERVER-CORE
 - **Goal:** register, extract shell, `DELETE /v1/me`, statuses, quota, idempotency (status in Postgres, result in memory), content-free 422 handler, log scrubbing, deploy one warm instance, host secrets.
+  - (added: pricing pass) Per-tier limits are read from config (`tier_limits`); `tier` comes from the token record only.
 - **Exit:**
   - pytest for each status code.
+  - (added: pricing pass) A config change to `tier_limits` changes the enforced limit (test).
   - In-flight duplicate → 202. A `done` duplicate is served from memory with no provider call. Text and image keys never collide.
   - Delete leaves zero rows for the token hash. Schema check finds **no content column**.
   - **422 canary**: the marker appears in neither the response nor the logs. Log capture shows no body text.
@@ -107,6 +115,7 @@ Status: plan only, written 2026-11-20. Nothing is built. Source of truth: `BUILD
 - **Week:** W2 · **Sessions:** 1 · **Lane:** B · **Deps:** 01, 05 · **∥:** —
 - **Components:** COMP-EVALSET slice A (SP-5): label schema, manifest validator, the 50 own images run through the dev build's ML Kit → script → Haiku.
 - **Exit:** SP-5 recorded: text-only failure %, whether the image arm fixes failures, chat-anchor accuracy, text p50. Manifest validator passes on the own half. Own images are **outside git** (hashes only).
+  - (added: purchases extension) The own half includes receipt/order fixtures (inside the ~150 images, not additional): with/without printed "Return by", a policy sentence without a date, order number + card last-4, one guard-blocked. Own or synthetic only.
 - **Leave:** `docs/spikes/SP-5.md` with the chosen image policy and the chat-heuristic findings that SPR-08 needs.
 - **Risk / fallback:** results trigger the SP-5 fallbacks (image-on-escalation final; chat dates `needs_review`).
 
@@ -123,6 +132,7 @@ Status: plan only, written 2026-11-20. Nothing is built. Source of truth: `BUILD
 - **Week:** W2 · **Sessions:** 2 · **Lane:** E/D · **Deps:** 02, 06 · **∥:** —
 - **Components:** COMP-RULES (SP-12)
 - **Goal:** `rules.json`, the TS `classify()`, then the Kotlin port. **Do TS first, Kotlin last**, so a Dec 2 worker failure can skip the Kotlin half.
+  - (added: purchases extension) Add the `receipt_like` keyword list and the `deadline_origin` evidence pattern to `rules.json`, with Kotlin and TS parity fixtures. Guard thresholds and patterns unchanged (~0.1 session, absorbed).
 - **Exit:** EVAL-GUARD-PARITY identical on the shared fixtures (≥20 chat, ≥20 not-chat). Chat recall ≥0.95. Sensitive recall ≥0.97 on 25 synthetic. AI-GATE recall ≥0.98. Outbound payload scan finds no email, phone or 7+ digit run.
 - **Leave:** `docs/spikes/SP-12.md`.
 - **Risk / fallback:** recall is short → widen patterns, biased toward false positives. **Release-blocking.**
@@ -231,6 +241,7 @@ Status: plan only, written 2026-11-20. Nothing is built. Source of truth: `BUILD
 - **Week:** W6 · **Sessions:** 1 · **Lane:** B · **Deps:** 06 · **∥:** any
 - **Components:** COMP-EVALSET slice B (Playwright generator: 100 synthetic images; merge the hand labels; dev/holdout split; hash-lock)
 - **Exit:** manifest validator passes. Class counts match (≈30 event incl. 10 RSVP, 20 deadline, 25 sensitive, 25 noise, 50 own). Holdout hash-locked (EVAL-META-02). Chat labels present.
+  - (added: purchases extension) 10 to 15 receipt/order fixtures sit inside the ~150 images (not additional), including ≥2 injection-in-receipt cases (counted toward the 10 injection fixtures). Labels carry `nothing_subtype` and `deadline_origin`. Manifest counts updated; Exit otherwise unchanged.
 - **Risk / fallback:** hand-labelling is behind → this sprint waits. The labelling is human work and must be finished in W1–W5.
 
 ### SPR-22 · Search and iOS catch-up
@@ -255,6 +266,8 @@ Status: plan only, written 2026-11-20. Nothing is built. Source of truth: `BUILD
 - **Week:** W7–W8 · **Sessions:** 2 (1½ if cut 6) · **Lane:** E (+A server metrics endpoint) · **Deps:** 15, 04 · **∥:** 24
 - **Components:** COMP-METRICS; COMP-BEHAVLOG
 - **Exit:** **EVAL-BAR-14 payload scan finds 0 content.** Counters reconcile with a scripted 10-card session. Shadow clock test passes and **no notification is ever scheduled**. No free-text column.
+  - (added: purchases extension) Enum dims on `metric_daily` for the new fields; the F8 report computes the promotion trigger (receipts ≥15% of processed screenshots AND ≥30% of those with a printed return date); the scripted 10-card session includes one receipt; the EVAL-BAR-14 scan covers the new dims.
+  - (added: pricing pass) Pricing enum dims added (see SPR-02 list); EVAL-BAR-14 still finds 0 content.
 - **Risk / fallback:** free text in a dimension → server-side enum validation.
 
 ### SPR-26 · Calibration and threshold freeze
@@ -267,6 +280,7 @@ Status: plan only, written 2026-11-20. Nothing is built. Source of truth: `BUILD
 - **Week:** W8 · **Sessions:** 2 (1¾ if cut 5) · **Lane:** screens · **Deps:** 23, 20, 16, 25 · **∥:** 26, 32
 - **Components:** COMP-UI-READONLY → COMP-UI-SETTINGS (in that order)
 - **Exit:** matches UI.md §4.3 read-only and §4.4. Delete-one removes the row, OCR and thumbnail. No sensitive toggle and no "Send anyway" (test). ST-HISTORY-EMPTY renders. MAE-UNDO History path passes.
+  - (added: pricing pass) Note: the optional Settings "Pro preview" row (cut-list item P0, UI.md §4.4) is about ¼ session of UI work inside this sprint. It is the first cut and is not needed for the schedule.
 
 ### SPR-28 · Onboarding
 - **Week:** W8 · **Sessions:** 2 (1½ if cut 8) · **Lane:** screens · **Deps:** 27, 19, 16, 20 · **∥:** 32
@@ -392,7 +406,7 @@ Root `STATUS.md` always holds: current sprint and session k/size, last green com
 | Trigger | When | Cuts eligible (window) | Baseline default | Take if behind… |
 |---|---|---|---|---|
 | **T0** | CP0, Nov 25 | — | Declare baseline or fallback from W1 throughput (≥6 → baseline; ≤5 → fallback + Chair escalation, §1) | — |
-| **T1** | Thu Dec 3, before SPR-10 | **0** Increase Contrast (SPR-10); **3** long-press source quote (SPR-11); **4** calendar colour dot (SPR-19); **9** ink-in flood (SPR-12); **10** Recursive fonts (SPR-10) | Take 0, 3, 4 (≈0.6). Take 9, 10 (≈1.0) unless ≥13 sessions were done by Dec 2 | Any deficit → all five |
+| **T1** | Thu Dec 3, before SPR-10 | (added: pricing pass) **P0** Pro preview row (SPR-27; cut first); (added: purchases extension) **P1** receipt fixtures (SPR-06/21), **P2** purchase logging fields (SPR-02/25); P0, P1, P2 sit above item 0 and original items 0–12 keep their numbers; the contract and metric fields (P2 and the pricing fields) are decidable only until Nov 25; **0** Increase Contrast (SPR-10); **3** long-press source quote (SPR-11); **4** calendar colour dot (SPR-19); **9** ink-in flood (SPR-12); **10** Recursive fonts (SPR-10) | Take 0, 3, 4 (≈0.6). Take 9, 10 (≈1.0) unless ≥13 sessions were done by Dec 2 | Any deficit → all five |
 | **T2** | CP2, ~Dec 23 | **1** 30k report (SPR-32); **5** Settings default-calendar and alerts rows (SPR-27); **6** shadow evaluator (SPR-25, Chair note); **7** calibration detail (SPR-26); **8** ONB-3 interactive sample (SPR-28) | Take 1, 5, 6, 7, 8 (≈2.0); the baseline is break-even without them | Always at baseline; reverse only if ≥2 sessions ahead |
 | **T3** | Sun Jan 3, before SPR-22 | **11** iOS catch-up (SPR-22, Chair note; amends F1(b) and EVAL-BAR-12) | Hold | ≥1 session behind → take (saves 1) |
 | **T4** | Thu Jan 7 | **12** Search/FTS5 (Chair decision; already built in SPR-22, so only the remaining perf/recall work is saved, ≈¼–½). If you foresee it at T3, cut 12 **before** SPR-22 to save the full 1–1.25 | Hold | RC cannot land by Jan 14 |
@@ -430,6 +444,20 @@ Root `STATUS.md` always holds: current sprint and session k/size, last green com
 | R16 | Maestro on iOS without a Mac (SP-16) | Med / Low | SPR-03 desk check | Scripted manual run on iPhone (+½ session) |
 | R17 | Tester recruitment over the holidays; >100 Android testers | Med / Med | <30 sign-ups by Jan 3 | Recruit from CP2; closed track if >100 Android |
 | R18 | Content leaks into logs or telemetry, or a secret is committed | Low / Critical | CI grep, 422 canary, secret scan | Built into SPR-01/04/25 Exit; `.env*` ignored; blocks the RC |
+| R19 | (added: purchases extension) Receipt logging data shows receipts <15% or printed dates <30% (promotion trigger not met) | Low / Low | SPR-25 F8 report | Ship expense CSV without return reminders; no Purchase type |
+
+---
+
+## 7. CP0 checklist (Nov 25)
+
+- Working app name chosen before SPR-01 sets bundle IDs (app name, bundle IDs, App Group ID)
+- (added: purchases extension) purchase logging enums are in `contracts-v1`
+- (added: pricing pass) `tier`, `quota` and pricing metric enums are in `contracts-v1`
+
+## 8. Post-beta list
+
+- (added: pricing pass) PRICE-TIERS: unsized, dotted (not scheduled)
+- (added: pricing pass) PRICE-IAP: unsized, dotted (not scheduled)
 
 ---
 ## User decision (2026-11-20): beta date stays Jan 13–15, 2027

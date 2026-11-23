@@ -26,5 +26,5 @@ All design lives in `docs/`:
 ## Git rules
 - Commit only as the configured identity: `calebabr <cjabrantes06@gmail.com>`. Check `git config user.name` and `user.email` first.
 - Never add `Co-Authored-By`, "Generated with Claude Code", or any AI attribution to commits, PRs or tags.
-- Never push unless the builder asks in that session. There is currently no remote.
+- Remote: `origin` = https://github.com/calebabr/penciled.git (the builder's account). Push only when the builder asks in that session, and only as the builder: authored by `calebabr <cjabrantes06@gmail.com>`, never by Claude, never with a `Co-Authored-By: Claude` trailer or any AI attribution in commits, PR bodies or tags. Never force-push or push to any other remote.
 - Commit message format: `<SPR-xx> <component>: <what>`.

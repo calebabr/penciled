@@ -37,6 +37,11 @@ SAFE_KEYS = (
     "outcome",
     "exc_type",
     "count",
+    # COMP-LLMPROXY provider_call: integer token counts only.
+    "input_tokens",
+    "output_tokens",
+    "cache_read_tokens",
+    "cache_write_tokens",
 )
 _SAFE_STR = re.compile(r"^[A-Za-z0-9_.:/{}\-]{1,80}$")
 SCRUBBED = "[scrubbed]"
@@ -117,7 +122,19 @@ def configure_logging(level: int = logging.INFO) -> None:
     access.handlers.clear()
     access.propagate = False
     access.disabled = True
-    for name in ("sqlalchemy", "alembic", "httpx", "httpcore"):
+    for name in QUIET_LOGGERS:
+        logging.getLogger(name).setLevel(logging.WARNING)
+
+
+# Third-party loggers held at WARNING. The anthropic SDK and its httpx2 transport log
+# request options (the full prompt, OCR text and image) at DEBUG when ANTHROPIC_LOG is
+# set; holding them at WARNING means those records are never created (the formatter
+# would scrub them anyway).
+QUIET_LOGGERS = ("sqlalchemy", "alembic", "httpx", "httpcore", "anthropic", "httpx2", "httpcore2")
+
+
+def quiet_provider_loggers() -> None:
+    for name in ("anthropic", "httpx2", "httpcore2"):
         logging.getLogger(name).setLevel(logging.WARNING)
 
 

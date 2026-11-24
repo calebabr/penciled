@@ -1,0 +1,91 @@
+{
+  "type": "object",
+  "properties": {
+    "screen_class": {
+      "type": "string",
+      "enum": ["event", "deadline", "nothing", "sensitive", "unsure"]
+    },
+    "class_conf": { "$ref": "#/$defs/Conf" },
+    "source_hint": { "type": ["string", "null"] },
+    "nothing_subtype": {
+      "anyOf": [
+        { "type": "string", "enum": ["receipt_order", "shipping", "booking", "meme", "other"] },
+        { "type": "null" }
+      ]
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "anyOf": [{ "$ref": "#/$defs/EventProposal" }, { "$ref": "#/$defs/DeadlineProposal" }]
+      }
+    },
+    "notes_for_user": { "type": ["string", "null"] }
+  },
+  "required": [
+    "screen_class",
+    "class_conf",
+    "source_hint",
+    "nothing_subtype",
+    "actions",
+    "notes_for_user"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Conf": { "type": "string", "enum": ["high", "medium", "low"] },
+    "Evidence": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "line": { "type": "integer" }
+      },
+      "required": ["text", "line"],
+      "additionalProperties": false
+    },
+    "RawWhen": {
+      "type": "object",
+      "properties": {
+        "date_text": { "type": ["string", "null"] },
+        "time_text": { "type": ["string", "null"] },
+        "tz_text": { "type": ["string", "null"] },
+        "evidence": { "type": "array", "items": { "$ref": "#/$defs/Evidence" } },
+        "conf": { "$ref": "#/$defs/Conf" }
+      },
+      "required": ["date_text", "time_text", "tz_text", "evidence", "conf"],
+      "additionalProperties": false
+    },
+    "Field": {
+      "type": "object",
+      "properties": {
+        "value": { "type": ["string", "null"] },
+        "evidence": { "anyOf": [{ "$ref": "#/$defs/Evidence" }, { "type": "null" }] },
+        "conf": { "$ref": "#/$defs/Conf" }
+      },
+      "required": ["value", "evidence", "conf"],
+      "additionalProperties": false
+    },
+    "EventProposal": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "const": "event" },
+        "title": { "$ref": "#/$defs/Field" },
+        "start": { "$ref": "#/$defs/RawWhen" },
+        "end": { "anyOf": [{ "$ref": "#/$defs/RawWhen" }, { "type": "null" }] },
+        "location": { "$ref": "#/$defs/Field" },
+        "all_day_hint": { "type": "boolean" }
+      },
+      "required": ["kind", "title", "start", "end", "location", "all_day_hint"],
+      "additionalProperties": false
+    },
+    "DeadlineProposal": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "const": "deadline" },
+        "title": { "$ref": "#/$defs/Field" },
+        "due": { "$ref": "#/$defs/RawWhen" },
+        "related_to": { "type": ["integer", "null"] }
+      },
+      "required": ["kind", "title", "due", "related_to"],
+      "additionalProperties": false
+    }
+  }
+}

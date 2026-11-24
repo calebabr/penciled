@@ -1,8 +1,75 @@
 # server/STATUS.md
 
-**State:** SPR-04 COMP-SERVER-CORE built and green locally (SQLite and Postgres via PGlite).
-**Not deployed yet:** needs the builder's hosting account (see `DEPLOY.md`). Provider call
-is a stub (`StubExtractor`) until SPR-05.
+**State:** SPR-05 COMP-LLMPROXY built and green offline (contract tests against a
+recorded-response fake). SPR-04 COMP-SERVER-CORE built and green (SQLite and Postgres via PGlite).
+**Not deployed yet:** needs the builder's hosting account (see `DEPLOY.md`). The provider
+defaults to the stub (`PENCILED_PROVIDER=stub`); `anthropic` is wired but no live call has
+been made (SP-11 is builder-gated).
+
+## SPR-05 exit checklist (COMP-LLMPROXY: AI-EXTRACT, AI-ESCALATE, SP-11)
+- [x] Contract tests against a recorded-response fake: the real `anthropic` SDK over an
+      `httpx2.MockTransport` replaying hand-written synthetic responses
+      (`tests/fixtures/provider/*.json`, `tests/provider_fake.py`). Covered: event + related
+      deadline, deadline, nothing x 5 subtypes, sensitive, unsure, refusal, malformed JSON,
+      schema-invalid (extra key, 4 actions, bad kind, note > 140), truncated (max_tokens),
+      ungrounded evidence, injected URL title, thinking block first, 429 + Retry-After,
+      spend-cap 429, 529, 500, 400, timeout, connection error, cache write vs cache hit
+      (`test_llmproxy_contract.py`, `test_llmproxy_request.py`).
+- [x] 0 proxy retries (SDK `max_retries=0` forced): every failure is exactly one transport
+      call; a 3-attempt client sequence is 3 calls; text -> escalate -> img is 2 calls.
+- [x] Escalation only on DESIGN 5.2 triggers: never for chat, `image_allowed=false`, an img
+      call, sensitive or a refusal; yes for unsure / Needs a look / missing or ungrounded
+      required field / < 3 OCR lines with c >= 0.5.
+- [x] Cost maths (micro-USD from config prices, cache read 0.1x, write 1.25x/2x, long-context
+      card) and accounting into usage_daily / spend_daily.
+- [x] No prompt / OCR / image / model text in logs (raw records and formatted output, SDK
+      logger forced to WARNING even with ANTHROPIC_LOG=debug) or in any DB row
+      (`test_llmproxy_privacy.py`).
+- [x] SP-11 harness `tools/sp11_latency.py` (refuses without `--i-approve-spend`, prints the
+      max cost first; offline tests in `test_sp11_harness.py`) and `docs/spikes/SP-11.md`
+      (local, git-ignored).
+- [ ] **Builder-gated:** live SP-11 run: `cache_read_input_tokens > 0` from the 2nd call,
+      p50 <= 1.5 s, p95 <= 4 s, mean <= $0.002, pick an arm. Steps: `docs/spikes/SP-11.md` 6.
+- [ ] **Builder-gated:** `fly secrets set ANTHROPIC_API_KEY=...` and `PENCILED_PROVIDER=anthropic`
+      after SP-11 passes (and after the deploy itself).
+
+### SPR-05 design
+- `app/proxy/anthropic_extractor.py` `AnthropicExtractor` (the `Extractor` protocol): one
+  `messages.create` per request; `claude-haiku-5-5`; `output_config={"effort": "low",
+  "format": {"type": "json_schema", ...}}`; thinking adaptive (omitted) or `disabled` (SP-11
+  arm, config); no temperature/top_p/top_k, no prefill, no tools; content read by block type.
+  Refusal -> Needs a look (no escalation); max_tokens / invalid JSON / schema-invalid ->
+  Needs a look (escalation allowed). `mode=resolve_only` re-shapes the echoed `raw` (itself
+  re-validated) with no call.
+- `app/proxy/prompts/v1/` frozen `system.txt` (6,151 chars, ~1.4-1.9K tokens, above the
+  512-token Haiku 5.5 cache minimum) + `output_schema.json` (model-facing DESIGN 5.4 subset,
+  plus `nothing_subtype`), pinned by sha256 in `manifest.json` (load fails on drift).
+  `cache_control: {"type":"ephemeral"}` on the single system block; OCR and image after it.
+- `app/proxy/request_build.py` SEC-INJ-ISOLATE: `<request_context>` (locale, chat flag) +
+  `<ocr_lines>` JSON array; forged delimiters in OCR text are neutralised. The model never
+  sees captured_at or tz (no date maths outside the resolver).
+- `app/proxy/model_output.py` strict pydantic re-validation of the model output with the
+  constraints the API cannot enforce (lengths, ranges, <= 3 actions, unknown keys rejected).
+- `app/proxy/shape.py` **interim** response builder until SPR-13/14: exact (normalised)
+  grounding of evidence and text values, URL/email/command titles cleared, dates always
+  value null + needs_review/missing + blocking (no Ready card possible), gate `ask` or
+  `needs_look`, card_score null, alarms [], notification null, deadline_origin "other",
+  related_to must point at an event. SPR-14 replaces this module.
+- `app/proxy/image.py` escalation preprocessing (Pillow): EXIF orientation applied then all
+  metadata dropped, top 5.5% cropped (status bar), long edge <= 1,568 px, JPEG q70,
+  decompression-bomb guard. Undecodable image -> 422 `image_invalid`, no call.
+- `app/proxy/config.py` + `app/config/provider.json`: model, effort, thinking, max_tokens
+  2048, timeout 8 s, image settings, prices. `PENCILED_PROVIDER=stub|anthropic` (default
+  stub), `PENCILED_PROVIDER_CONFIG_PATH`. Key: SDK reads `ANTHROPIC_API_KEY` from the env.
+- Error mapping (`app/api/service.py`): provider 429 -> our 429 with the provider's
+  Retry-After; spend-cap 429 -> 503 `{basic:true}`; 529/5xx/4xx/timeout/connection -> 500
+  `internal`; key marked failed so the client's next attempt re-runs.
+- New precheck: `image_b64` requires the `img` key segment (422 `key_mode`), so an image
+  result can never be stored under the text key.
+- `usage_daily.input_tokens` = whole prompt (uncached + cache read + cache write); the split
+  is priced separately into `est_micro_usd`. No schema change. Log line `provider_call`:
+  outcome, mode, latency_ms, token counts only.
+- Deps: `anthropic==2.13.0` (brings `httpx2`), `pillow>=11,<14`.
 
 ## SPR-04 exit checklist
 - [x] pytest for each status code: 200, 202, 204, 401, 403, 413, 422, 426, 429, 500, 503
@@ -73,6 +140,7 @@ python -m venv .venv && .venv/Scripts/python -m pip install -e ../shared/python 
 .venv/Scripts/python -m pytest -q            # SQLite in-memory fallback
 .venv/Scripts/ruff check .
 .venv/Scripts/mypy app
+.venv/Scripts/python tools/sp11_latency.py   # SP-11 estimate only; live run needs --i-approve-spend
 ```
 Real Postgres locally without Docker (PGlite, Postgres compiled to WASM, runs on Node):
 ```
@@ -90,8 +158,11 @@ CI: the python job has a `postgres:16` service, sets `PENCILED_REQUIRE_POSTGRES=
 Docker image, checks it runs as non-root and that `/v1/health` answers.
 
 ## Notes / next
-- SPR-05: implement `Extractor` for COMP-LLMPROXY (provider key via `fly secrets set`),
-  report real `ProviderUsage` (tokens, est_micro_usd) so the global $ cap is live.
+- SPR-05 follow-ups for SPR-14 (COMP-RESOLVER-GVP): replace `app/proxy/shape.py`
+  (fuzzy grounding, AI-CONF, propose, `deadline_origin` from rules.json); count a model
+  `sensitive` verdict as a guard miss in metric_daily (not counted yet).
+- Failed provider calls (429/5xx) are not counted in usage_daily.provider_calls (they bill
+  nothing); the client's 3-call cap is enforced on device.
 - Single instance only in the beta (memory result cache). Redis trigger per DESIGN 4.4.
 - A root `.dockerignore` (copy of `Dockerfile.dockerignore`) would also cover non-BuildKit
   builders; outside the server lane, left to the lead.

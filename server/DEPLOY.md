@@ -18,7 +18,9 @@ Idempotency results live in that process's memory for 10 min (D20.2), so the bet
 | `PENCILED_GLOBAL_DAILY_USD_CAP` | no | Global daily $ estimate cap; default `1.0`. |
 | `PENCILED_TIER_LIMITS_PATH` | no | Optional override of `app/config/tier_limits.json`. |
 | `PENCILED_BURST_PER_MINUTE` | no | 429 burst limit per token; default 30. |
-| provider key (SPR-05) | **yes** | Not used yet; will be added with `fly secrets set` the same way. |
+| `ANTHROPIC_API_KEY` | **yes** | Provider key (SPR-05). The builder sets it with `fly secrets set ANTHROPIC_API_KEY=...` in their own shell; the SDK reads it from the environment. Never in a file. |
+| `PENCILED_PROVIDER` | no | `stub` (default: schema-valid nothing-to-do, no provider call) or `anthropic` (real Claude Haiku 5.5 calls). Set `anthropic` in `fly.toml [env]` only after the SP-11 live checks pass. |
+| `PENCILED_PROVIDER_CONFIG_PATH` | no | Optional override of `app/config/provider.json` (model, effort, thinking, timeout, prices). |
 
 ## 1. Option A (recommended): Fly.io
 

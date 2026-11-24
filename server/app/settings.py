@@ -37,6 +37,18 @@ def _float(raw: str | None, default: float) -> float:
     return default if raw is None or raw == "" else float(raw)
 
 
+PROVIDERS = ("stub", "anthropic")
+
+
+def _provider(raw: str | None, default: str) -> str:
+    if raw is None or raw == "":
+        return default
+    value = raw.strip().lower()
+    if value not in PROVIDERS:
+        raise ValueError("PENCILED_PROVIDER must be stub or anthropic")
+    return value
+
+
 @dataclass(frozen=True)
 class Settings:
     database_url: str | None = None
@@ -61,6 +73,10 @@ class Settings:
     idem_cache_max_entries: int = 5000
     # How often expired idempotency rows are swept (seconds).
     idem_sweep_interval_s: int = 60
+    # COMP-LLMPROXY: "stub" (default; tests) or "anthropic" (key from the host secret store).
+    provider: str = "stub"
+    # Optional override of the packaged app/config/provider.json.
+    provider_config_path: str | None = None
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None) -> Settings:
@@ -76,4 +92,6 @@ class Settings:
             ),
             tier_limits_path=e.get("PENCILED_TIER_LIMITS_PATH") or None,
             burst_per_minute=_int(e.get("PENCILED_BURST_PER_MINUTE"), d.burst_per_minute),
+            provider=_provider(e.get("PENCILED_PROVIDER"), d.provider),
+            provider_config_path=e.get("PENCILED_PROVIDER_CONFIG_PATH") or None,
         )

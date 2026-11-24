@@ -23,7 +23,7 @@ from app.db.engine import Database
 from app.db.schema import metadata
 from app.errors import error_response
 from app.idemp import store as idem
-from app.proxy.adapter import Extractor
+from app.proxy.adapter import Extractor, ProviderError
 from app.quota import service as quota
 from app.settings import Settings, parse_version
 
@@ -63,7 +63,19 @@ def precheck(req: ExtractRequest, settings: Settings) -> JSONResponse | None:
         return error_response("payload_too_large")
     if req.image_b64 is not None and len(req.image_b64) > settings.max_image_b64_chars:
         return error_response("payload_too_large")
+    if req.image_b64 is not None and key_mode(req.idempotency_key) != "img":
+        # An image call must carry the img key segment (D20), so it can never be stored
+        # under, or served from, the text-only key.
+        return error_response(
+            "invalid_request", issues=[{"loc": ["body", "idempotency_key"], "type": "key_mode"}]
+        )
     return None
+
+
+def key_mode(idempotency_key: str) -> str:
+    """The mode segment (text|img) of HMAC:mode:prompt_version:schema_version:rerun."""
+    parts = idempotency_key.split(":")
+    return parts[1] if len(parts) == 5 else ""
 
 
 class Services:
@@ -173,11 +185,16 @@ class Services:
             body = outcome.response.to_json_dict()
         except Exception as exc:
             logger.error(
-                "extract_failed", extra={"event": "extract_failed", "exc_type": type(exc).__name__}
+                "extract_failed",
+                extra={
+                    "event": "extract_failed",
+                    "exc_type": type(exc).__name__,
+                    "code": exc.kind if isinstance(exc, ProviderError) else "unexpected",
+                },
             )
             with self.db.engine.begin() as conn:
                 idem.finish(conn, kh, "failed", self.clock(), self._result_ttl)
-            return error_response("internal")
+            return provider_error_response(exc)
         body.pop("quota", None)  # quota is recomputed on every serve
 
         done_at = self.clock()
@@ -190,6 +207,24 @@ class Services:
                 )
         self._log("ok", record, req)
         return self._ok(body, record, count)
+
+
+def provider_error_response(exc: Exception) -> JSONResponse:
+    """Provider failures (COMP-LLMPROXY). The key is already marked failed, so the
+    client's next automatic attempt re-runs it; the proxy itself never retries."""
+    if isinstance(exc, ProviderError):
+        if exc.kind == "rate_limited":
+            # Pass the provider's Retry-After through; the client honours it.
+            return error_response("rate_limited", retry_after=exc.retry_after or 30)
+        if exc.kind == "spend_cap":
+            # Provider monthly cap (the $25 backstop): same as our own cap, ST-PAUSED.
+            return error_response("service_paused", basic=True)
+        if exc.kind == "bad_input":
+            return error_response(
+                "invalid_request",
+                issues=[{"loc": ["body", "image_b64"], "type": "image_invalid"}],
+            )
+    return error_response("internal")
 
 
 def no_content() -> Response:

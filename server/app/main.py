@@ -23,7 +23,8 @@ from app.config import TierLimits, load_tier_limits
 from app.db.engine import Database
 from app.errors import content_free_validation_handler, error_response
 from app.logs import AccessLogMiddleware
-from app.proxy.adapter import Extractor, StubExtractor
+from app.proxy.adapter import Extractor
+from app.proxy.factory import make_extractor
 from app.settings import Settings
 
 __all__ = ["SCHEMA_VERSION", "app", "content_free_validation_handler", "create_app"]
@@ -52,7 +53,7 @@ def create_app(
         settings=settings,
         db=db or Database(settings.database_url),
         limits=limits or load_tier_limits(settings.tier_limits_path),
-        extractor=extractor or StubExtractor(),
+        extractor=extractor or make_extractor(settings),
         clock=clock,
     )
     application = FastAPI(

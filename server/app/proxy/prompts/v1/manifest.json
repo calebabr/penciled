@@ -1,0 +1,7 @@
+{
+  "prompt_version": "v1",
+  "model": "claude-haiku-5-5",
+  "note": "Baseline v1 (SPR-05). Any change to system.txt or output_schema.json needs a new version directory or a human-approved baseline-bump commit with the eval report (hard rule 9).",
+  "system_sha256": "ebfc0c7a67e40dff94d306b05af15339ec0aef589eb626779254dcd772d22aed",
+  "output_schema_sha256": "80a7bb0fd2ba791eed242a255b9966e27844839c308f688e90e9b626437fcff9"
+}

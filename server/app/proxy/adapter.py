@@ -1,23 +1,53 @@
-"""Provider adapter seam (DESIGN 3.6 seam 5). SPR-05 plugs the real COMP-LLMPROXY
-in behind `Extractor`; until then `StubExtractor` returns a schema-valid
-nothing-to-do result and counts its (pretend) provider calls."""
+"""Provider adapter seam (DESIGN 3.6 seam 5). `AnthropicExtractor`
+(app/proxy/anthropic_extractor.py, COMP-LLMPROXY) is the real provider;
+`StubExtractor` returns a schema-valid nothing-to-do result and counts its
+(pretend) provider calls. `app/proxy/factory.py` picks one from settings
+(PENCILED_PROVIDER=stub|anthropic, default stub)."""
 
 from __future__ import annotations
 
 import threading
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import Literal, Protocol
 
 from penciled_contracts.generated import SCHEMA_VERSION, ExtractRequest, ExtractResponse
 
 
 @dataclass(frozen=True)
 class ProviderUsage:
+    """Counts and money only (never content). input_tokens is the whole prompt
+    (uncached + cache read + cache write); the split is kept for the cost estimate
+    and SP-11, est_micro_usd already prices each part at its own rate."""
+
     provider_calls: int = 0
     image_calls: int = 0
     input_tokens: int = 0
     output_tokens: int = 0
     est_micro_usd: int = 0
+    cache_read_input_tokens: int = 0
+    cache_creation_input_tokens: int = 0
+    latency_ms: int = 0
+
+
+ProviderErrorKind = Literal[
+    "rate_limited",  # provider 429 with Retry-After -> our 429 + Retry-After
+    "spend_cap",  # provider monthly spend cap reached -> 503 {basic:true}
+    "overloaded",  # 529
+    "upstream",  # other 5xx
+    "timeout",
+    "connection",
+    "rejected",  # provider 4xx other than 429 (our bug or config): 500
+    "bad_input",  # request image cannot be decoded -> 422
+]
+
+
+class ProviderError(Exception):
+    """A provider call that produced no usable response. Carries no content."""
+
+    def __init__(self, kind: ProviderErrorKind, retry_after: int | None = None) -> None:
+        super().__init__(kind)
+        self.kind: ProviderErrorKind = kind
+        self.retry_after = retry_after
 
 
 @dataclass(frozen=True)

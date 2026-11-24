@@ -1,0 +1,29 @@
+{
+  "note": "Evidence that is not in the OCR text: fields cleared to missing, escalate_hint on.",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "id": "msg_fixture_0001",
+    "type": "message",
+    "role": "assistant",
+    "model": "claude-haiku-5-5",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"screen_class\": \"event\", \"class_conf\": \"high\", \"source_hint\": null, \"nothing_subtype\": null, \"actions\": [{\"kind\": \"event\", \"title\": {\"value\": \"Taco Tuesday MODEL-OUTPUT-MARKER-7f3a\", \"evidence\": {\"text\": \"Taco Tuesday\", \"line\": 0}, \"conf\": \"high\"}, \"start\": {\"date_text\": \"Tue\", \"time_text\": \"6pm\", \"tz_text\": null, \"evidence\": [{\"text\": \"Tue 6pm\", \"line\": 1}], \"conf\": \"high\"}, \"end\": null, \"location\": {\"value\": \"Rosa's\", \"evidence\": {\"text\": \"Rosa's\", \"line\": 1}, \"conf\": \"high\"}, \"all_day_hint\": false}], \"notes_for_user\": null}"
+      }
+    ],
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 40,
+      "output_tokens": 300,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1400
+    }
+  }
+}

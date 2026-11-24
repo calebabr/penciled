@@ -1,0 +1,15 @@
+{
+  "note": "Provider 500.",
+  "status": 500,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "type": "error",
+    "error": {
+      "type": "api_error",
+      "message": "Internal server error"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "note": "Nothing to do, subtype shipping.",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "id": "msg_fixture_0001",
+    "type": "message",
+    "role": "assistant",
+    "model": "claude-haiku-5-5",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"screen_class\": \"nothing\", \"class_conf\": \"high\", \"source_hint\": null, \"nothing_subtype\": \"shipping\", \"actions\": [], \"notes_for_user\": null}"
+      }
+    ],
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 30,
+      "output_tokens": 90,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1400
+    }
+  }
+}

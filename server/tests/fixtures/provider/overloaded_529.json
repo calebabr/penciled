@@ -1,0 +1,15 @@
+{
+  "note": "Provider overloaded.",
+  "status": 529,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "type": "error",
+    "error": {
+      "type": "overloaded_error",
+      "message": "Overloaded"
+    }
+  }
+}

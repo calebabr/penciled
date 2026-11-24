@@ -1,0 +1,28 @@
+{
+  "note": "Safeguard decline: HTTP 200, stop_reason refusal, no server-side fallback for Haiku 5.5.",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "id": "msg_fixture_0001",
+    "type": "message",
+    "role": "assistant",
+    "model": "claude-haiku-5-5",
+    "content": [],
+    "stop_reason": "refusal",
+    "stop_sequence": null,
+    "stop_details": {
+      "type": "refusal",
+      "category": "general_harms",
+      "explanation": null
+    },
+    "usage": {
+      "input_tokens": 30,
+      "output_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1400
+    }
+  }
+}

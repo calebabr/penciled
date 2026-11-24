@@ -1,0 +1,29 @@
+{
+  "note": "Same as event_cache_write, second call: the system prompt is read from the cache.",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "id": "msg_fixture_0001",
+    "type": "message",
+    "role": "assistant",
+    "model": "claude-haiku-5-5",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"screen_class\": \"event\", \"class_conf\": \"high\", \"source_hint\": \"flyer\", \"nothing_subtype\": null, \"actions\": [{\"kind\": \"event\", \"title\": {\"value\": \"Pizza Night\", \"evidence\": {\"text\": \"Pizza Night!\", \"line\": 0}, \"conf\": \"high\"}, \"start\": {\"date_text\": \"Fri\", \"time_text\": \"7pm\", \"tz_text\": null, \"evidence\": [{\"text\": \"Fri 7pm\", \"line\": 1}], \"conf\": \"high\"}, \"end\": null, \"location\": {\"value\": \"Rosa's\", \"evidence\": {\"text\": \"Rosa's\", \"line\": 1}, \"conf\": \"high\"}, \"all_day_hint\": false}, {\"kind\": \"deadline\", \"title\": {\"value\": \"RSVP\", \"evidence\": {\"text\": \"RSVP by Wed\", \"line\": 2}, \"conf\": \"high\"}, \"due\": {\"date_text\": \"Wed\", \"time_text\": null, \"tz_text\": null, \"evidence\": [{\"text\": \"RSVP by Wed\", \"line\": 2}], \"conf\": \"high\"}, \"related_to\": 0}], \"notes_for_user\": null}"
+      }
+    ],
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 40,
+      "output_tokens": 300,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1400
+    }
+  }
+}

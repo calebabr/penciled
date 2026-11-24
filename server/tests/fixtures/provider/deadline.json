@@ -1,0 +1,29 @@
+{
+  "note": "A single all-day deadline.",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "id": "msg_fixture_0001",
+    "type": "message",
+    "role": "assistant",
+    "model": "claude-haiku-5-5",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"screen_class\": \"deadline\", \"class_conf\": \"high\", \"source_hint\": \"notice\", \"nothing_subtype\": null, \"actions\": [{\"kind\": \"deadline\", \"title\": {\"value\": \"Books due\", \"evidence\": {\"text\": \"Books due Dec 4\", \"line\": 1}, \"conf\": \"high\"}, \"due\": {\"date_text\": \"Dec 4\", \"time_text\": null, \"tz_text\": null, \"evidence\": [{\"text\": \"Books due Dec 4\", \"line\": 1}], \"conf\": \"high\"}, \"related_to\": null}], \"notes_for_user\": null}"
+      }
+    ],
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 38,
+      "output_tokens": 210,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1400
+    }
+  }
+}

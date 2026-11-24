@@ -1,0 +1,15 @@
+{
+  "note": "Provider 400 (our bug).",
+  "status": 400,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "type": "error",
+    "error": {
+      "type": "invalid_request_error",
+      "message": "invalid request"
+    }
+  }
+}

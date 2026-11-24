@@ -93,3 +93,16 @@ def make_harness(engine: Engine) -> MakeHarness:
 @pytest.fixture
 def harness(make_harness: MakeHarness) -> Harness:
     return make_harness()
+
+
+@pytest.fixture(scope="session")
+def jpeg_b64() -> str:
+    """A small synthetic JPEG (solid colour, no content) for image-mode requests."""
+    import base64
+    import io
+
+    from PIL import Image
+
+    buf = io.BytesIO()
+    Image.new("RGB", (120, 240), (200, 180, 40)).save(buf, format="JPEG")
+    return base64.b64encode(buf.getvalue()).decode("ascii")

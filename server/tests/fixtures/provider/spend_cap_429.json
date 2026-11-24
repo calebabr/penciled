@@ -1,0 +1,18 @@
+{
+  "note": "Monthly spend cap reached (no retry-after).",
+  "status": 429,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "type": "error",
+    "error": {
+      "type": "rate_limit_error",
+      "message": "You have reached your specified API usage limits.",
+      "details": {
+        "error_code": "enforced_spend_limit_reached"
+      }
+    }
+  }
+}

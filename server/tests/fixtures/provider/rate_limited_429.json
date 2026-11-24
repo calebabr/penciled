@@ -1,0 +1,16 @@
+{
+  "note": "Rate limited with Retry-After.",
+  "status": 429,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001",
+    "retry-after": "17"
+  },
+  "body": {
+    "type": "error",
+    "error": {
+      "type": "rate_limit_error",
+      "message": "Number of request tokens has exceeded your per-minute rate limit"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "note": "Escalation (image) call result.",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "request-id": "req_fixture_0001"
+  },
+  "body": {
+    "id": "msg_fixture_0001",
+    "type": "message",
+    "role": "assistant",
+    "model": "claude-haiku-5-5",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"screen_class\": \"event\", \"class_conf\": \"high\", \"source_hint\": \"flyer\", \"nothing_subtype\": null, \"actions\": [{\"kind\": \"event\", \"title\": {\"value\": \"Pizza Night\", \"evidence\": {\"text\": \"Pizza Night!\", \"line\": 0}, \"conf\": \"high\"}, \"start\": {\"date_text\": \"Fri\", \"time_text\": \"7pm\", \"tz_text\": null, \"evidence\": [{\"text\": \"Fri 7pm\", \"line\": 1}], \"conf\": \"high\"}, \"end\": null, \"location\": {\"value\": \"Rosa's\", \"evidence\": {\"text\": \"Rosa's\", \"line\": 1}, \"conf\": \"high\"}, \"all_day_hint\": false}], \"notes_for_user\": null}"
+      }
+    ],
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 1650,
+      "output_tokens": 320,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1400
+    }
+  }
+}
